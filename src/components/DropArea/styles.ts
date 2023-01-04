@@ -2,11 +2,12 @@ import { createStyles } from "@mantine/core";
 
 const useStyles = createStyles(() => ({
   container: {
-    border: "1px solid black",
+    border: "1px dashed black",
     backgroundColor: "white",
-    cursor: "move",
   },
-  dragItem: {},
+  hide: {
+    display: "none",
+  },
 }));
 
 export default useStyles;
