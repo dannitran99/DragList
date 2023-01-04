@@ -3,7 +3,7 @@ import axios from "axios";
 import { IDataList } from "../../types/listDrag";
 
 export const listGetAll = createAsyncThunk("list/get", async () => {
-  const getData = localStorage.getItem("dataList");
+  const getData = await localStorage.getItem("dataList");
   if (getData) return JSON.parse(getData);
   const data = await axios.get("data.json").then((json) => {
     return json.data;
