@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { useDisclosure } from "@mantine/hooks";
 import { RootState } from "../../app/store";
@@ -7,6 +7,8 @@ import AddModal from "../../components/AddModal";
 import { Button } from "@mantine/core";
 import { IDataList } from "../../types/listDrag";
 import DragItem from "../../components/DragItem";
+import DropArea from "../../components/DropArea";
+import { ItemTypes } from "../../constants/dragItem";
 
 function DragList() {
   const dispatch = useAppDispatch();
@@ -17,6 +19,11 @@ function DragList() {
     dispatch(listGetAll());
   }, [dispatch]);
 
+  const handleDrop = useCallback((item: { name: string }) => {
+    const { name } = item;
+    console.log(name);
+  }, []);
+
   return (
     <>
       <Button onClick={() => handlers.open()}> Add Item </Button>
@@ -24,6 +31,10 @@ function DragList() {
         <DragItem key={idx} data={item} />
       ))}
       <AddModal isOpened={opened} setOpened={() => handlers.close()} />
+      <DropArea
+        accept={ItemTypes.QUEUE}
+        onDrop={(item: { name: string }) => handleDrop(item)}
+      />
     </>
   );
 }
