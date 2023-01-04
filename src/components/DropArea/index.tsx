@@ -11,7 +11,6 @@ function DropArea({ accept, onDrop }: IProps) {
     accept,
     drop: onDrop,
     collect: (monitor) => ({
-      isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),
     }),
   });
