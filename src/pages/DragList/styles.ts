@@ -15,14 +15,23 @@ const useStyles = createStyles((theme) => ({
     backgroundColor: "white",
     boxShadow: "2px 2px 4px #000000",
   },
+  addButton: {
+    margin: theme.spacing.xs,
+    height: "50px",
+    border: "1px dashed black",
+    borderRadius: theme.radius.xl,
+  },
   stack: {
     height: "100%",
-    position: "relative",
-    padding: theme.spacing.xs,
     overflow: "auto",
+    padding: theme.spacing.xs,
   },
   fullHeight: {
     height: "100%",
+  },
+  parentRelative: {
+    height: "80%",
+    position: "relative",
   },
 }));
 

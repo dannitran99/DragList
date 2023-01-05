@@ -4,13 +4,14 @@ import { useDisclosure } from "@mantine/hooks";
 import { RootState } from "../../app/store";
 import { addItem, listGetAll } from "../../app/actions/dragList";
 import AddModal from "../../components/AddModal";
-import { Button, Flex, Paper, Space, Stack, Text } from "@mantine/core";
+import { Box, Button, Divider, Flex, Paper, Stack, Text } from "@mantine/core";
 import { IDataList } from "../../types/listDrag";
 import DragItem from "../../components/DragItem";
 import DropArea from "../../components/DropArea";
 import { ItemTypes } from "../../constants/dragItem";
 import _ from "lodash";
 import useStyles from "./styles";
+import { IconPlus } from "@tabler/icons";
 
 function DragList() {
   const dispatch = useAppDispatch();
@@ -28,7 +29,6 @@ function DragList() {
       let newData = _.cloneDeep(data);
 
       let index = newData.map((item: IDataList) => item.id).indexOf(id);
-      console.log(newData[index], id);
 
       switch (newData[index].status) {
         case ItemTypes.QUEUE:
@@ -51,10 +51,15 @@ function DragList() {
     [data, dispatch]
   );
 
+  const handleDeleteItem = (id: string) => {
+    let newData = _.cloneDeep(data);
+    let index = newData.map((item: IDataList) => item.id).indexOf(id);
+    if (index > -1) newData.splice(index, 1);
+    dispatch(addItem(newData));
+  };
+
   return (
-    <Paper className={classes.wrapper}>
-      <Button onClick={() => handlers.open()}> Add Item </Button>
-      <Space h="md" />
+    <Paper className={classes.wrapper} shadow="lg" radius="md">
       <Flex
         className={classes.fullHeight}
         direction={{ base: "column", sm: "row" }}
@@ -72,11 +77,24 @@ function DragList() {
           >
             In Queue
           </Text>
+          <Divider my="sm" variant="dotted" />
+          <Button
+            className={classes.addButton}
+            onClick={() => handlers.open()}
+            variant="subtle"
+          >
+            <IconPlus />
+            Add Item
+          </Button>
           <Stack className={classes.stack}>
             {data
               .filter((item: IDataList) => item.status === ItemTypes.QUEUE)
               .map((item: IDataList, idx: number) => (
-                <DragItem key={idx} data={item} />
+                <DragItem
+                  key={idx}
+                  data={item}
+                  handleDelete={handleDeleteItem}
+                />
               ))}
           </Stack>
         </Flex>
@@ -91,17 +109,24 @@ function DragList() {
           >
             In Progress
           </Text>
-          <Stack className={classes.stack}>
-            {data
-              .filter((item: IDataList) => item.status === ItemTypes.PROGRESS)
-              .map((item: IDataList, idx: number) => (
-                <DragItem key={idx} data={item} />
-              ))}
+          <Divider my="sm" variant="dotted" />
+          <Box className={classes.parentRelative}>
+            <Stack className={classes.stack}>
+              {data
+                .filter((item: IDataList) => item.status === ItemTypes.PROGRESS)
+                .map((item: IDataList, idx: number) => (
+                  <DragItem
+                    key={idx}
+                    data={item}
+                    handleDelete={handleDeleteItem}
+                  />
+                ))}
+            </Stack>
             <DropArea
               accept={ItemTypes.QUEUE}
               onDrop={(item: { id: string }) => handleDrop(item)}
             />
-          </Stack>
+          </Box>
         </Flex>
         <Flex className={classes.container} gap="lg" direction="column">
           <Text
@@ -114,17 +139,24 @@ function DragList() {
           >
             Done
           </Text>
-          <Stack className={classes.stack}>
-            {data
-              .filter((item: IDataList) => item.status === ItemTypes.DONE)
-              .map((item: IDataList, idx: number) => (
-                <DragItem key={idx} data={item} />
-              ))}
+          <Divider my="sm" variant="dotted" />
+          <Box className={classes.parentRelative}>
+            <Stack className={classes.stack}>
+              {data
+                .filter((item: IDataList) => item.status === ItemTypes.DONE)
+                .map((item: IDataList, idx: number) => (
+                  <DragItem
+                    key={idx}
+                    data={item}
+                    handleDelete={handleDeleteItem}
+                  />
+                ))}
+            </Stack>
             <DropArea
               accept={ItemTypes.PROGRESS}
               onDrop={(item: { id: string }) => handleDrop(item)}
             />
-          </Stack>
+          </Box>
         </Flex>
       </Flex>
       <AddModal isOpened={opened} setOpened={() => handlers.close()} />

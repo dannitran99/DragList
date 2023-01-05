@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { randomId } from "@mantine/hooks";
 
@@ -10,7 +9,7 @@ import { IDataList } from "../../types/listDrag";
 
 interface IModal {
   isOpened: boolean;
-  setOpened: () => void;
+  setOpened(): void;
 }
 interface IDataModal {
   name: string;
@@ -26,7 +25,6 @@ function AddModal(props: IModal) {
       name: "",
       description: "",
     },
-
     validate: {
       name: (value) =>
         value.trim().length ? null : "Can not leave name blank!",
@@ -40,7 +38,8 @@ function AddModal(props: IModal) {
       status: "onQueue",
       create_at: new Date().toISOString(),
     };
-    dispatch(addItem([...data, newData]));
+    dispatch(addItem([newData, ...data]));
+    form.reset();
     setOpened();
   };
 

@@ -5,7 +5,7 @@ import useStyles from "./styles";
 
 interface IProps {
   accept: string;
-  onDrop: (item: { id: string }) => void;
+  onDrop(item: { id: string }): void;
 }
 
 function DropArea({ accept, onDrop }: IProps) {
