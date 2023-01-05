@@ -19,7 +19,7 @@ import { IconEdit, IconTrash } from "@tabler/icons";
 import ConfirmModal from "../ConfirmModal";
 interface IProps {
   data: IDataList;
-  handleDelete(id: string): void;
+  handleDelete(id: string, handlers: () => void): void;
 }
 
 dayjs.extend(duration);
@@ -53,7 +53,6 @@ function DragItem(props: IProps) {
         position="bottom"
         withArrow
         shadow="md"
-        closeDelay={0}
         disabled={opacity || opened}
       >
         <HoverCard.Target>
@@ -132,7 +131,7 @@ function DragItem(props: IProps) {
       <ConfirmModal
         isOpen={opened}
         onClose={handlers.close}
-        onClickDelete={() => handleDelete(id)}
+        onClickDelete={() => handleDelete(id, handlers.close)}
       />
     </>
   );

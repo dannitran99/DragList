@@ -14,11 +14,11 @@ export default function ConfirmModal(props: IProps) {
       overlayBlur={3}
       opened={isOpen}
       onClose={onClose}
-      title="Delete meeting room reservation"
+      title="Delete confirmation"
       lockScroll
     >
       <Flex gap="xl" direction="column">
-        Are you sure you want to delete this schedule?
+        Are you sure you want to delete this item?
         <Group position="right">
           <Button onClick={onClose} variant="outline">
             Cancel

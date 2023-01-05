@@ -51,10 +51,11 @@ function DragList() {
     [data, dispatch]
   );
 
-  const handleDeleteItem = (id: string) => {
+  const handleDeleteItem = (id: string, handler: () => void) => {
     let newData = _.cloneDeep(data);
     let index = newData.map((item: IDataList) => item.id).indexOf(id);
     if (index > -1) newData.splice(index, 1);
+    handler();
     dispatch(addItem(newData));
   };
 
@@ -74,6 +75,7 @@ function DragList() {
             ta="center"
             fz="xl"
             fw={700}
+            className={classes.headText}
           >
             In Queue
           </Text>
@@ -106,6 +108,7 @@ function DragList() {
             ta="center"
             fz="xl"
             fw={700}
+            className={classes.headText}
           >
             In Progress
           </Text>
@@ -136,6 +139,7 @@ function DragList() {
             ta="center"
             fz="xl"
             fw={700}
+            className={classes.headText}
           >
             Done
           </Text>

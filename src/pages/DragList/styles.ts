@@ -4,27 +4,30 @@ const useStyles = createStyles((theme) => ({
   wrapper: {
     backgroundColor: theme.colors.gray[2],
     height: "100%",
-    margin: theme.spacing.sm,
     padding: theme.spacing.lg,
   },
   container: {
-    height: "80%",
-    padding: theme.spacing.lg,
+    height: "100%",
     borderRadius: theme.radius.md,
     width: "100%",
     backgroundColor: "white",
     boxShadow: "2px 2px 4px #000000",
   },
+  headText: {
+    marginTop: theme.spacing.xl,
+  },
   addButton: {
     margin: theme.spacing.xs,
+    padding: theme.spacing.xs,
     height: "50px",
     border: "1px dashed black",
     borderRadius: theme.radius.xl,
   },
   stack: {
+    margin: theme.spacing.xs,
+    minHeight: "200px",
     height: "100%",
     overflow: "auto",
-    padding: theme.spacing.xs,
   },
   fullHeight: {
     height: "100%",
