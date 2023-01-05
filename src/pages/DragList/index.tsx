@@ -25,7 +25,6 @@ function DragList() {
   const handleDrop = useCallback(
     (item: { id: string }) => {
       const { id } = item;
-      console.log(id);
       let newData = _.cloneDeep(data);
 
       let index = newData.map((item: IDataList) => item.id).indexOf(id);
