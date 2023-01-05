@@ -1,10 +1,11 @@
 import { Box, Text } from "@mantine/core";
+import { IconStackPush } from "@tabler/icons";
 import { useDrop } from "react-dnd";
 import useStyles from "./styles";
 
 interface IProps {
   accept: string;
-  onDrop: (item: { name: string }) => void;
+  onDrop: (item: { id: string }) => void;
 }
 
 function DropArea({ accept, onDrop }: IProps) {
@@ -21,7 +22,10 @@ function DropArea({ accept, onDrop }: IProps) {
       ref={drop}
       className={cx(classes.container, { [classes.hide]: !canDrop })}
     >
-      {canDrop && `you can drop here`}
+      <IconStackPush />
+      <Text c="teal.9" fw={700}>
+        You can drop here
+      </Text>
     </Box>
   );
 }

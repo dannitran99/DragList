@@ -1,5 +1,5 @@
-body {
-  box-sizing: border-box;
+body,html {
+  box-sizing:initial;
   margin: 0;
   padding: 0;
   height: 100%;
@@ -8,6 +8,10 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+#root{
+  height: 100%;
 }
 
 code {

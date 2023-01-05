@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { randomId } from "@mantine/hooks";
+
 import { Modal, Button, Group, TextInput, Textarea } from "@mantine/core";
 import { RootState } from "../../app/store";
 import { useForm } from "@mantine/form";
@@ -33,6 +35,7 @@ function AddModal(props: IModal) {
 
   const postData = (val: IDataModal) => {
     const newData: IDataList = {
+      id: randomId(),
       ...val,
       status: "onQueue",
       create_at: new Date().toISOString(),
