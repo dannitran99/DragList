@@ -1,9 +1,14 @@
 import { Button, Divider, Drawer, Flex, Select, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconTrashX } from "@tabler/icons";
+import { Calendar } from "@mantine/dates";
+import { useNavigate } from "react-router-dom";
 import { addItem } from "../../app/actions/dragList";
 import { useAppDispatch } from "../../app/hooks";
+import { SelectTypes } from "../../constants/selectValue";
 import ConfirmModal from "../ConfirmModal";
+import { useState } from "react";
+import { RouteType } from "../../constants/route";
 interface IProps {
   isOpened: boolean;
   setClosed(): void;
@@ -11,7 +16,29 @@ interface IProps {
 export default function DrawerCustom(props: IProps) {
   const { isOpened, setClosed } = props;
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [openedModal, handlersModal] = useDisclosure(false);
+  const [dateValue, setDateValue] = useState<Date | null>(null);
+  const [sortValue, setSortValue] = useState<string | null>(null);
+
+  const handleSetDate = (val: Date) => {
+    setDateValue(val);
+    setSortValue(null);
+    navigate({
+      pathname: RouteType.dragList,
+      search: `?date=${val.toISOString()}`,
+    });
+  };
+
+  const handleSelectSort = (val: string) => {
+    setSortValue(val);
+    setDateValue(null);
+    navigate({
+      pathname: RouteType.dragList,
+      search: `?sort=${val}`,
+    });
+  };
+
   return (
     <Drawer
       opened={isOpened}
@@ -21,16 +48,19 @@ export default function DrawerCustom(props: IProps) {
       padding="md"
     >
       <Flex direction="column" gap="lg">
-        <Text>Filter</Text>
+        <Text>Filter menu</Text>
+        <Calendar value={dateValue} onChange={handleSetDate} />
         <Select
           label="Sort item by..."
           placeholder="Pick one"
           data={[
-            { value: "nameAsc", label: "Name ↑" },
-            { value: "nameDesc", label: "Name ↓" },
-            { value: "dateAsc", label: "Date ↑" },
-            { value: "dateDesc", label: "Date ↓" },
+            { value: SelectTypes.DATE_ASC, label: "Name ↑" },
+            { value: SelectTypes.DATE_DESC, label: "Name ↓" },
+            { value: SelectTypes.NAME_ASC, label: "Date ↑" },
+            { value: SelectTypes.NAME_DESC, label: "Date ↓" },
           ]}
+          value={sortValue}
+          onChange={handleSelectSort}
         />
         <Divider my="xl" />
         <Button
@@ -48,7 +78,7 @@ export default function DrawerCustom(props: IProps) {
         }}
         onClose={handlersModal.close}
         isOpen={openedModal}
-        title={"Are you sure you want to delete all item?"}
+        title={"Are you sure you want to delete all items?"}
       />
     </Drawer>
   );

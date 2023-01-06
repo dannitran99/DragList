@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@mantine/core": "^5.10.0",
+    "@mantine/dates": "^5.10.0",
     "@mantine/form": "^5.10.0",
     "@mantine/hooks": "^5.10.0",
     "@reduxjs/toolkit": "^1.9.1",
@@ -58,6 +59,13 @@
     "os": false
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.191"
+    "@types/lodash": "^4.14.191",
+    "eslint-import-resolver-typescript": "^3.5.2",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.31.11",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-simple-import-sort": "^8.0.0",
+    "prettier": "^2.8.1"
   }
 }

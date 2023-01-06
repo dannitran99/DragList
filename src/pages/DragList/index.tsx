@@ -38,7 +38,7 @@ function DragList() {
   const handleDrop = useCallback(
     (item: { id: string }) => {
       const { id } = item;
-      let newData = _.cloneDeep(data);
+      let newData: IDataList[] = _.cloneDeep(data);
 
       let index = newData.map((item: IDataList) => item.id).indexOf(id);
 
@@ -64,7 +64,7 @@ function DragList() {
   );
 
   const handleDeleteItem = (id: string, handler: () => void) => {
-    let newData = _.cloneDeep(data);
+    let newData: IDataList[] = _.cloneDeep(data);
     let index = newData.map((item: IDataList) => item.id).indexOf(id);
     if (index > -1) newData.splice(index, 1);
     handler();
