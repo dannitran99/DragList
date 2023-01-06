@@ -7,7 +7,6 @@ import { useForm } from "@mantine/form";
 import { addItem } from "../../app/actions/dragList";
 import { IDataList } from "../../types/listDrag";
 import { useEffect } from "react";
-import { config } from "process";
 import { setId } from "../../app/slices/listDrag";
 import _ from "lodash";
 
@@ -73,7 +72,7 @@ function AddModal(props: IModal) {
 
   return (
     <>
-      <Modal opened={isOpened} onClose={setOpened} title="Add to list">
+      <Modal opened={isOpened} onClose={setOpened} title="Add to list" centered>
         <form onSubmit={form.onSubmit((values) => postData(values))}>
           <TextInput
             withAsterisk

@@ -137,6 +137,7 @@ function DragItem(props: IProps) {
         isOpen={opened}
         onClose={handlers.close}
         onClickDelete={() => handleDelete(id, handlers.close)}
+        title={"Are you sure you want to delete this item?"}
       />
     </>
   );

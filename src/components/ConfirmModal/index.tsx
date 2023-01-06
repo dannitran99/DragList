@@ -3,9 +3,10 @@ interface IProps {
   isOpen: boolean;
   onClose(): void;
   onClickDelete(): void;
+  title: string;
 }
 export default function ConfirmModal(props: IProps) {
-  const { isOpen, onClose, onClickDelete } = props;
+  const { isOpen, onClose, onClickDelete, title } = props;
   return (
     <Modal
       withCloseButton={false}
@@ -18,7 +19,7 @@ export default function ConfirmModal(props: IProps) {
       lockScroll
     >
       <Flex gap="xl" direction="column">
-        Are you sure you want to delete this item?
+        {title}
         <Group position="right">
           <Button onClick={onClose} variant="outline">
             Cancel

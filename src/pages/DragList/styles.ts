@@ -2,6 +2,7 @@ import { createStyles } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
+    position: "relative",
     backgroundColor: theme.colors.gray[2],
     height: "100%",
     padding: theme.spacing.lg,
@@ -35,6 +36,24 @@ const useStyles = createStyles((theme) => ({
   parentRelative: {
     height: "80%",
     position: "relative",
+    margin: "0 10px",
+  },
+  drawerButton: {
+    position: "absolute",
+    top: "50%",
+    left: "0%",
+    height: "100px",
+    width: "100px",
+    transform: "translate(0,-50%)",
+    backgroundColor: theme.colors.blue,
+    clipPath: "ellipse(20% 50% at 0% 50%)",
+    transition: "all 0.3s",
+  },
+  drawerButtonHover: {
+    height: "50px",
+    width: "50px",
+    transform: "translate(10%,-50%)",
+    clipPath: "circle(50% at 50% 50%)",
   },
 }));
 
