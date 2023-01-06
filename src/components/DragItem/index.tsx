@@ -40,7 +40,7 @@ function DragItem(props: IProps) {
         opacity: monitor.isDragging(),
       }),
     }),
-    [name, status]
+    [id]
   );
 
   const truncate = (str: string, n: number) => {

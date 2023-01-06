@@ -49,7 +49,7 @@ function AddModal(props: IModal) {
       dispatch(setId(""));
       form.reset();
     }
-  }, [isOpened]);
+  }, [isOpened, dispatch]);
 
   const postData = (val: IDataModal) => {
     if (idSelect) {
