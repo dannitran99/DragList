@@ -10,6 +10,7 @@ import {
   Button,
   Divider,
   Flex,
+  LoadingOverlay,
   Paper,
   Stack,
   Text,
@@ -21,19 +22,37 @@ import { ItemTypes } from "../../constants/dragItem";
 import _ from "lodash";
 import useStyles from "./styles";
 import { IconMenu2, IconPlus } from "@tabler/icons";
-import { setId } from "../../app/slices/listDrag";
+import { setFilter, setId } from "../../app/slices/listDrag";
 import DrawerCustom from "../../components/Drawer";
+import { useSearchParams } from "react-router-dom";
+import dayjs from "dayjs";
 
 function DragList() {
   const dispatch = useAppDispatch();
   const { cx, classes } = useStyles();
-  const { data } = useAppSelector((state: RootState) => state.listDrag);
+  const { data, loading } = useAppSelector(
+    (state: RootState) => state.listDrag
+  );
   const [openedModal, handlersModal] = useDisclosure(false);
   const [openedDrawer, handlersDrawer] = useDisclosure(false);
   const { hovered, ref } = useHover();
+  const [searchParams] = useSearchParams();
+  const paramDate = searchParams.get("date");
+  const paramSort = searchParams.get("sort");
+
   useEffect(() => {
     dispatch(listGetAll());
-  }, [dispatch]);
+    if (paramDate) {
+      const filter = data.filter((item: IDataList) => {
+        if (item.update_at)
+          return dayjs(item.update_at).diff(dayjs(paramDate), "day") === 0;
+        else return dayjs(item.create_at).diff(dayjs(paramDate), "day") === 0;
+      });
+      dispatch(setFilter(filter));
+    } else {
+      setFilter(null);
+    }
+  }, [dispatch, paramDate, paramSort]);
 
   const handleDrop = useCallback(
     (item: { id: string }) => {
@@ -79,6 +98,7 @@ function DragList() {
   return (
     <>
       <Paper className={classes.wrapper} shadow="lg" radius="md">
+        <LoadingOverlay visible={loading} overlayBlur={2} />
         <Flex
           className={cx(classes.drawerButton, {
             [classes.drawerButtonHover]: hovered,
