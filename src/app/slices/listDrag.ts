@@ -5,16 +5,22 @@ import { addItem, listGetAll } from "../actions/dragList";
 
 interface IListDrag {
   data: IDataList[];
+  idSelect: string;
 }
 
 const initialState: IListDrag = {
   data: [],
+  idSelect: "",
 };
 
 export const listDrag = createSlice({
   name: "listDrag",
   initialState,
-  reducers: {},
+  reducers: {
+    setId: (state, { payload }: PayloadAction<string>) => {
+      state.idSelect = payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(
       listGetAll.fulfilled,
@@ -35,5 +41,5 @@ export const listDrag = createSlice({
 });
 
 export const selectUser = (state: { list: IListDrag }) => state.list;
-export const {} = listDrag.actions;
+export const { setId } = listDrag.actions;
 export default listDrag.reducer;

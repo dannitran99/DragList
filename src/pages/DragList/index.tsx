@@ -12,6 +12,7 @@ import { ItemTypes } from "../../constants/dragItem";
 import _ from "lodash";
 import useStyles from "./styles";
 import { IconPlus } from "@tabler/icons";
+import { setId } from "../../app/slices/listDrag";
 
 function DragList() {
   const dispatch = useAppDispatch();
@@ -59,6 +60,11 @@ function DragList() {
     dispatch(addItem(newData));
   };
 
+  const handleEdit = (id: string) => {
+    dispatch(setId(id));
+    handlers.open();
+  };
+
   return (
     <Paper className={classes.wrapper} shadow="lg" radius="md">
       <Flex
@@ -95,6 +101,7 @@ function DragList() {
                 <DragItem
                   key={idx}
                   data={item}
+                  openModalEdit={handleEdit}
                   handleDelete={handleDeleteItem}
                 />
               ))}
@@ -121,6 +128,7 @@ function DragList() {
                   <DragItem
                     key={idx}
                     data={item}
+                    openModalEdit={handleEdit}
                     handleDelete={handleDeleteItem}
                   />
                 ))}
@@ -152,6 +160,7 @@ function DragList() {
                   <DragItem
                     key={idx}
                     data={item}
+                    openModalEdit={handleEdit}
                     handleDelete={handleDeleteItem}
                   />
                 ))}
@@ -163,7 +172,7 @@ function DragList() {
           </Box>
         </Flex>
       </Flex>
-      <AddModal isOpened={opened} setOpened={() => handlers.close()} />
+      <AddModal isOpened={opened} setOpened={handlers.close} />
     </Paper>
   );
 }

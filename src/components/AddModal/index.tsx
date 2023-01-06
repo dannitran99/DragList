@@ -6,6 +6,10 @@ import { RootState } from "../../app/store";
 import { useForm } from "@mantine/form";
 import { addItem } from "../../app/actions/dragList";
 import { IDataList } from "../../types/listDrag";
+import { useEffect } from "react";
+import { config } from "process";
+import { setId } from "../../app/slices/listDrag";
+import _ from "lodash";
 
 interface IModal {
   isOpened: boolean;
@@ -19,7 +23,9 @@ interface IDataModal {
 function AddModal(props: IModal) {
   const { isOpened, setOpened } = props;
   const dispatch = useAppDispatch();
-  const { data } = useAppSelector((state: RootState) => state.listDrag);
+  const { data, idSelect } = useAppSelector(
+    (state: RootState) => state.listDrag
+  );
   const form = useForm({
     initialValues: {
       name: "",
@@ -30,15 +36,37 @@ function AddModal(props: IModal) {
         value.trim().length ? null : "Can not leave name blank!",
     },
   });
+  useEffect(() => {
+    if (isOpened) {
+      if (idSelect) {
+        let index = data.map((item: IDataList) => item.id).indexOf(idSelect);
+        form.setValues({
+          name: data[index].name,
+          description: data[index].description,
+        });
+      }
+    } else {
+      dispatch(setId(""));
+      form.reset();
+    }
+  }, [isOpened]);
 
   const postData = (val: IDataModal) => {
-    const newData: IDataList = {
-      id: randomId(),
-      ...val,
-      status: "onQueue",
-      create_at: new Date().toISOString(),
-    };
-    dispatch(addItem([newData, ...data]));
+    if (idSelect) {
+      let newData = _.cloneDeep(data);
+      let index = newData.map((item: IDataList) => item.id).indexOf(idSelect);
+      newData[index].name = val.name;
+      newData[index].description = val.description;
+      dispatch(addItem(newData));
+    } else {
+      const newData: IDataList = {
+        id: randomId(),
+        ...val,
+        status: "onQueue",
+        create_at: new Date().toISOString(),
+      };
+      dispatch(addItem([newData, ...data]));
+    }
     form.reset();
     setOpened();
   };

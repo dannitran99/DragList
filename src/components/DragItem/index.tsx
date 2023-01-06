@@ -20,13 +20,14 @@ import ConfirmModal from "../ConfirmModal";
 interface IProps {
   data: IDataList;
   handleDelete(id: string, handlers: () => void): void;
+  openModalEdit(id: string): void;
 }
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
 function DragItem(props: IProps) {
-  const { data, handleDelete } = props;
+  const { data, handleDelete, openModalEdit } = props;
   const { name, description, status, id, create_at, update_at } = data;
   const { cx, classes } = useStyles();
   const { hovered, ref } = useHover();
@@ -42,9 +43,9 @@ function DragItem(props: IProps) {
     [name, status]
   );
 
-  function truncate(str: string, n: number) {
+  const truncate = (str: string, n: number) => {
     return str.length > n ? str.slice(0, n - 1) + "..." : str;
-  }
+  };
 
   return (
     <>
@@ -82,7 +83,11 @@ function DragItem(props: IProps) {
         <HoverCard.Dropdown>
           <Group position="right">
             <Tooltip label="Edit">
-              <ActionIcon variant="light" color="blue">
+              <ActionIcon
+                variant="light"
+                color="blue"
+                onClick={() => openModalEdit(id)}
+              >
                 <IconEdit size={18} />
               </ActionIcon>
             </Tooltip>
