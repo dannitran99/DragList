@@ -21,7 +21,7 @@ import DropArea from "../../components/DropArea";
 import { ItemTypes } from "../../constants/dragItem";
 import _ from "lodash";
 import useStyles from "./styles";
-import { IconMenu2, IconPlus } from "@tabler/icons";
+import { IconMenu2, IconPlus, IconTent } from "@tabler/icons";
 import { setFilter, setId } from "../../app/slices/listDrag";
 import DrawerCustom from "../../components/Drawer";
 import { useSearchParams } from "react-router-dom";
@@ -64,19 +64,21 @@ function DragList() {
       switch (newData[index].status) {
         case ItemTypes.QUEUE:
           newData[index].status = ItemTypes.PROGRESS;
+          newData[index] = {
+            ...newData[index],
+            update_at: new Date().toISOString(),
+          };
           break;
         case ItemTypes.PROGRESS:
           newData[index].status = ItemTypes.DONE;
+          newData[index] = {
+            ...newData[index],
+            end_at: new Date().toISOString(),
+          };
           break;
         default:
           break;
       }
-      newData[index].update_at
-        ? (newData[index].update_at = new Date().toISOString())
-        : (newData[index] = {
-            ...newData[index],
-            update_at: new Date().toISOString(),
-          });
       dispatch(addItem(newData));
     },
     [data, dispatch]
@@ -155,6 +157,7 @@ function DragList() {
                     data={item}
                     openModalEdit={handleEdit}
                     handleDelete={handleDeleteItem}
+                    date={item.create_at}
                   />
                 ))}
             </Stack>
@@ -184,6 +187,7 @@ function DragList() {
                       data={item}
                       openModalEdit={handleEdit}
                       handleDelete={handleDeleteItem}
+                      date={item.update_at}
                     />
                   ))}
               </Stack>
@@ -216,6 +220,7 @@ function DragList() {
                       data={item}
                       openModalEdit={handleEdit}
                       handleDelete={handleDeleteItem}
+                      date={item.end_at}
                     />
                   ))}
               </Stack>

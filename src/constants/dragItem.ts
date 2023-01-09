@@ -3,3 +3,7 @@ export const ItemTypes = {
   PROGRESS: "onProgress",
   DONE: "onDone",
 };
+
+export const TableConstants = {
+  keydrag: "dragItem",
+};

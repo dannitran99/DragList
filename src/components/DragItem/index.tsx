@@ -21,14 +21,15 @@ interface IProps {
   data: IDataList;
   handleDelete(id: string, handlers: () => void): void;
   openModalEdit(id: string): void;
+  date: Date | string | undefined;
 }
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
 function DragItem(props: IProps) {
-  const { data, handleDelete, openModalEdit } = props;
-  const { name, description, status, id, create_at, update_at } = data;
+  const { data, handleDelete, openModalEdit, date } = props;
+  const { name, description, status, id } = data;
   const { cx, classes } = useStyles();
   const { hovered, ref } = useHover();
   const [opened, handlers] = useDisclosure(false);
@@ -73,9 +74,7 @@ function DragItem(props: IProps) {
                 {truncate(name, 20)}
               </Text>
               <Text size="sm" color="dimmed">
-                {update_at
-                  ? dayjs(update_at).format("DD-MM-YYYY HH:mm:ss")
-                  : dayjs(create_at).format("DD-MM-YYYY HH:mm:ss")}
+                {dayjs(date).format("DD-MM-YYYY HH:mm:ss")}
               </Text>
             </Flex>
           </Box>
@@ -117,19 +116,12 @@ function DragItem(props: IProps) {
             {description}
           </Text>
           <Text size="sm" color="dimmed" align="right">
-            {update_at
-              ? dayjs
-                  .duration(
-                    dayjs(update_at).diff(dayjs(new Date()), "minutes"),
-                    "minutes"
-                  )
-                  .humanize(true)
-              : dayjs
-                  .duration(
-                    dayjs(create_at).diff(dayjs(new Date()), "minutes"),
-                    "minutes"
-                  )
-                  .humanize(true)}
+            {dayjs
+              .duration(
+                dayjs(date).diff(dayjs(new Date()), "minutes"),
+                "minutes"
+              )
+              .humanize(true)}
           </Text>
         </HoverCard.Dropdown>
       </HoverCard>
