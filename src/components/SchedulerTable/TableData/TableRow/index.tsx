@@ -8,7 +8,10 @@ import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import { RootState } from "../../../../app/store";
 import { ItemTypes, TableConstants } from "../../../../constants/dragItem";
 import { IDataList } from "../../../../types/listDrag";
-import { convertPostoTime } from "../../../../utils/convertDate";
+import {
+  convertPostoTime,
+  convertTimeToPos,
+} from "../../../../utils/convertDate";
 import { compareDay, compareHour } from "../../../../utils/selectDay";
 import Scheduler from "./Scheduler";
 import useStyles from "./styles";
@@ -43,7 +46,9 @@ export default function TableRow({
         key={index}
         cellWidth={cellWidth}
         cellHeight={cellHeight}
-        isNow={compareHour(dayjs(date).hour(index).toString(), new Date())}
+        isNow={
+          compareHour(dayjs(date).hour(index).toString(), new Date()) === 0
+        }
       />
     );
   }
@@ -65,17 +70,19 @@ export default function TableRow({
       };
 
       let newleft = Math.round(item.left + delta.x);
-      const newStart = convertPostoTime(newleft, width, start, end, date);
-      let newEnd;
-      if (item.update_at) {
-        newEnd = newStart.add(
-          dayjs(item.end_at).diff(dayjs(item.update_at), "second"),
-          "second"
-        );
-      } else {
-        newEnd = newStart.add(30, "minute");
-      }
-
+      const newStart = convertPostoTime(
+        newleft ? newleft : 0,
+        width,
+        start,
+        end,
+        date
+      );
+      let newEnd = item.update_at
+        ? newStart.add(
+            dayjs(item.end_at).diff(dayjs(item.update_at), "second"),
+            "second"
+          )
+        : newStart.add(30, "minute");
       let newData: IDataList[] = _.cloneDeep(data);
 
       let index = newData.map((item: IDataList) => item.id).indexOf(item.id);
@@ -101,16 +108,30 @@ export default function TableRow({
   return (
     <Box
       ref={ref}
-      className={cx(classes.container, { [classes.evenRow]: isEvenRow })}
+      className={cx(classes.container, {
+        [classes.evenRow]: isEvenRow,
+        [classes.stripes]: compareDay(date, new Date()) < 0,
+      })}
       sx={() => ({
         height: cellHeight,
       })}
     >
       {cell}
-      {canDrop && <Box ref={drop} className={classes.dropArea}></Box>}
+      {canDrop && compareDay(date, new Date()) >= 0 && (
+        <Box
+          ref={drop}
+          className={classes.dropArea}
+          sx={() => ({
+            left:
+              compareDay(date, new Date()) === 0
+                ? convertTimeToPos(new Date(), width, start, end)
+                : 0,
+          })}
+        ></Box>
+      )}
       {data
         .filter((item: IDataList) => {
-          return compareDay(item.update_at, date);
+          return !compareDay(item.update_at, date);
         })
         .filter((item: IDataList) => {
           return item.end_at;

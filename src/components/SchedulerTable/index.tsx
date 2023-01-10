@@ -2,6 +2,7 @@ import { Flex } from "@mantine/core";
 import TableLeftLabel from "./TableLeftLebel";
 import TableData from "./TableData";
 import useStyles from "./styles";
+import { useHover } from "@mantine/hooks";
 
 interface IProps {
   dateRange: Date[];
@@ -19,10 +20,10 @@ export default function TableScheduler({
   cellHeight,
 }: IProps) {
   const { cx, classes } = useStyles();
-
+  const { hovered, ref } = useHover();
   return (
     <>
-      <Flex className={classes.wrapper}>
+      <Flex className={classes.wrapper} ref={ref}>
         <TableLeftLabel dateRange={dateRange} cellHeight={cellHeight} />
         <TableData
           dateRange={dateRange}
@@ -30,6 +31,7 @@ export default function TableScheduler({
           end={end}
           cellWidth={cellWidth}
           cellHeight={cellHeight}
+          isHovered={hovered}
         />
       </Flex>
     </>

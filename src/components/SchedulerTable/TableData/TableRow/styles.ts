@@ -15,6 +15,10 @@ const useStyles = createStyles((theme) => ({
     left: 0,
     position: "absolute",
   },
+  stripes: {
+    backgroundImage:
+      "linear-gradient(0deg, #ffffff 25%, #f5f5f5 25%, #f5f5f5 50%, #ffffff 50%, #ffffff 75%, #f5f5f5 75%, #f5f5f5 100%)",
+  },
 }));
 
 export default useStyles;

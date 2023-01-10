@@ -13,6 +13,13 @@ const useStyles = createStyles((theme) => ({
       backgroundColor: theme.colors.blue[4],
     },
   },
+  disableDrag: {
+    backgroundColor: theme.colors.gray[5],
+    cursor: "default",
+    "&:hover": {
+      backgroundColor: theme.colors.gray[6],
+    },
+  },
 }));
 
 export default useStyles;

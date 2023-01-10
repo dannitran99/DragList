@@ -1,4 +1,4 @@
-import { Box, Divider, ScrollArea, Text } from "@mantine/core";
+import { Box, ScrollArea, Text } from "@mantine/core";
 import TableRow from "./TableRow";
 import useStyles from "./styles";
 import { useElementSize, useMouse } from "@mantine/hooks";
@@ -11,6 +11,7 @@ interface IProps {
   cellWidth: number;
   cellHeight: number;
   dateRange: Date[];
+  isHovered: boolean;
 }
 
 export default function TableData({
@@ -19,11 +20,15 @@ export default function TableData({
   cellWidth,
   cellHeight,
   dateRange,
+  isHovered,
 }: IProps) {
-  const { cx, classes } = useStyles();
+  const { classes } = useStyles();
   const { ref, x } = useMouse();
   const eTableSize = useElementSize();
-  const [scrollPosition, onScrollPositionChange] = useState({ x: 0, y: 0 });
+  const [scrollPosition, onScrollPositionChange] = useState<{
+    x: number;
+    y: number;
+  }>({ x: 0, y: 0 });
   const time = [];
 
   for (let index = start; index < end; index++) {
@@ -66,19 +71,21 @@ export default function TableData({
           />
         </Box>
       ))}
-      <Box
-        className={classes.cursorTable}
-        sx={() => ({
-          left: `${x}px`,
-        })}
-      >
-        {convertPostoTime(
-          x + scrollPosition.x,
-          eTableSize.width,
-          start,
-          end
-        ).format("HH:mm")}
-      </Box>
+      {isHovered && (
+        <Box
+          className={classes.cursorTable}
+          sx={() => ({
+            left: `${x}px`,
+          })}
+        >
+          {convertPostoTime(
+            x + scrollPosition.x + 3,
+            eTableSize.width,
+            start,
+            end
+          ).format("HH:mm")}
+        </Box>
+      )}
     </ScrollArea>
   );
 }

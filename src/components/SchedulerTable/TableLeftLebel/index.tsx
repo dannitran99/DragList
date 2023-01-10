@@ -24,7 +24,7 @@ export default function TableLeftLabel({ dateRange, cellHeight }: IProps) {
         <Box
           key={idx}
           className={cx(classes.container, {
-            [classes.borderHighlight]: compareDay(item, new Date()),
+            [classes.borderHighlight]: !compareDay(item, new Date()),
           })}
           sx={() => ({
             height: cellHeight,

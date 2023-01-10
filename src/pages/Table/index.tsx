@@ -10,14 +10,16 @@ import {
   RangeSlider,
   Stack,
   Divider,
+  Button,
 } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
-import { useToggle } from "@mantine/hooks";
-import { IconChevronDown, IconChevronUp } from "@tabler/icons";
+import { useDisclosure, useToggle } from "@mantine/hooks";
+import { IconChevronDown, IconChevronUp, IconPlus } from "@tabler/icons";
 import { useEffect, useState } from "react";
 import { listGetAll } from "../../app/actions/dragList";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { RootState } from "../../app/store";
+import AddModal from "../../components/AddModal";
 import DragItem from "../../components/DragItem";
 import Table from "../../components/SchedulerTable";
 import { ItemTypes, TableConstants } from "../../constants/dragItem";
@@ -29,6 +31,7 @@ export default function TableScheduler() {
   const { cx, classes } = useStyles();
   const { data } = useAppSelector((state: RootState) => state.listDrag);
   const dispatch = useAppDispatch();
+  const [openedModal, handlersModal] = useDisclosure(false);
   const [openedSetting, toggleSetting] = useToggle([false, true]);
   const [openedTodo, toggleTodo] = useToggle([true, false]);
   const [dateRange, setDateRange] = useState<Date[]>(selectWeek(new Date()));
@@ -114,7 +117,15 @@ export default function TableScheduler() {
               </Flex>
               <Collapse in={openedTodo} className={classes.container}>
                 <Divider my="xl" />
-                <Stack>
+                <Button
+                  className={classes.addButton}
+                  onClick={() => handlersModal.open()}
+                  variant="subtle"
+                >
+                  <IconPlus />
+                  Add Item
+                </Button>
+                <Stack className={classes.stackItem}>
                   {data
                     .filter(
                       (item: IDataList) => item.status === ItemTypes.QUEUE
@@ -144,6 +155,7 @@ export default function TableScheduler() {
           </Paper>
         </Grid.Col>
       </Grid>
+      <AddModal isOpened={openedModal} setOpened={handlersModal.close} />
     </Box>
   );
 }

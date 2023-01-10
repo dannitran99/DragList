@@ -1,5 +1,4 @@
 import { Box } from "@mantine/core";
-import dayjs from "dayjs";
 import { useDrag } from "react-dnd";
 import { TableConstants } from "../../../../../constants/dragItem";
 import { IDataList } from "../../../../../types/listDrag";
@@ -8,6 +7,7 @@ import {
   convertDurationToPixel,
   convertTimeToPos,
 } from "../../../../../utils/convertDate";
+import { compareExact, compareHour } from "../../../../../utils/selectDay";
 import useStyles from "./styles";
 
 interface IProps {
@@ -24,7 +24,7 @@ export default function Scheduler({
   start,
   end,
 }: IProps) {
-  const { classes } = useStyles();
+  const { cx, classes } = useStyles();
   const { id } = data;
   const { update_at, end_at, name } = data;
   const left = convertTimeToPos(data.update_at, parentWidth, start, end);
@@ -53,13 +53,15 @@ export default function Scheduler({
   }
   return (
     <Box
-      ref={drag}
+      ref={compareExact(update_at, new Date()) >= 0 ? drag : null}
       sx={() => ({
         left,
         width,
         height: parentHeight,
       })}
-      className={classes.scheduler}
+      className={cx(classes.scheduler, {
+        [classes.disableDrag]: compareExact(update_at, new Date()) < 0,
+      })}
     >
       {name}
     </Box>
