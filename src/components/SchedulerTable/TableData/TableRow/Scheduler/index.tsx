@@ -26,11 +26,11 @@ export default function Scheduler({
 }: IProps) {
   const { classes } = useStyles();
   const { id } = data;
-
+  const { update_at, end_at, name } = data;
   const left = convertTimeToPos(data.update_at, parentWidth, start, end);
   const width = convertDurationToPixel(
-    data.update_at,
-    data.end_at,
+    update_at,
+    end_at,
     parentWidth,
     start,
     end
@@ -38,7 +38,7 @@ export default function Scheduler({
   const [{ isDragging }, drag, dragPreview] = useDrag(
     () => ({
       type: TableConstants.keydrag,
-      item: { id, left, width },
+      item: { id, left, width, update_at, end_at },
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
@@ -61,7 +61,7 @@ export default function Scheduler({
       })}
       className={classes.scheduler}
     >
-      {data.name}
+      {name}
     </Box>
   );
 }

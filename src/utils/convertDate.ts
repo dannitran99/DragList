@@ -74,8 +74,11 @@ export function convertPostoTime(
   pos: number,
   rowWidth: number,
   durationStart: number,
-  durationEnd: number
+  durationEnd: number,
+  day?: Date
 ) {
+  if (pos < 0) return dayjs(day).hour(durationStart).minute(0).second(0);
+
   const duration = durationEnd - durationStart;
   const oneHourWidth = rowWidth / duration;
   const oneMinWidth = oneHourWidth / 60;
@@ -84,5 +87,5 @@ export function convertPostoTime(
   const hour = Math.floor(pos / oneHourWidth) + durationStart;
   const minute = Math.floor((pos % oneHourWidth) / oneMinWidth);
   const second = Math.floor(((pos % oneHourWidth) % oneMinWidth) / oneSecWidth);
-  return dayjs().hour(hour).minute(minute).second(second);
+  return dayjs(day).hour(hour).minute(minute).second(second);
 }
