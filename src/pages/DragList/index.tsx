@@ -21,7 +21,7 @@ import DropArea from "../../components/DropArea";
 import { ItemTypes } from "../../constants/dragItem";
 import _ from "lodash";
 import useStyles from "./styles";
-import { IconMenu2, IconPlus, IconTent } from "@tabler/icons";
+import { IconMenu2, IconPlus } from "@tabler/icons";
 import { setFilter, setId } from "../../app/slices/listDrag";
 import DrawerCustom from "../../components/Drawer";
 import { useSearchParams } from "react-router-dom";
@@ -155,6 +155,7 @@ function DragList() {
                   <DragItem
                     key={idx}
                     data={item}
+                    dragType={item.status}
                     openModalEdit={handleEdit}
                     handleDelete={handleDeleteItem}
                     date={item.create_at}
@@ -185,6 +186,7 @@ function DragList() {
                     <DragItem
                       key={idx}
                       data={item}
+                      dragType={item.status}
                       openModalEdit={handleEdit}
                       handleDelete={handleDeleteItem}
                       date={item.update_at}
@@ -218,6 +220,7 @@ function DragList() {
                     <DragItem
                       key={idx}
                       data={item}
+                      dragType={item.status}
                       openModalEdit={handleEdit}
                       handleDelete={handleDeleteItem}
                       date={item.end_at}

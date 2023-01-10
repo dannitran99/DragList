@@ -12,30 +12,26 @@ import { useDisclosure, useHover } from "@mantine/hooks";
 import dayjs from "dayjs";
 import { useDrag } from "react-dnd";
 import { IDataList } from "../../types/listDrag";
-import duration from "dayjs/plugin/duration";
-import relativeTime from "dayjs/plugin/relativeTime";
 import useStyles from "./styles";
 import { IconEdit, IconTrash } from "@tabler/icons";
 import ConfirmModal from "../ConfirmModal";
 interface IProps {
   data: IDataList;
-  handleDelete(id: string, handlers: () => void): void;
-  openModalEdit(id: string): void;
+  handleDelete?(id: string, handlers: () => void): void;
+  openModalEdit?(id: string): void;
+  dragType: string;
   date: Date | string | undefined;
 }
 
-dayjs.extend(duration);
-dayjs.extend(relativeTime);
-
 function DragItem(props: IProps) {
-  const { data, handleDelete, openModalEdit, date } = props;
+  const { data, handleDelete, openModalEdit, date, dragType } = props;
   const { name, description, status, id } = data;
   const { cx, classes } = useStyles();
   const { hovered, ref } = useHover();
   const [opened, handlers] = useDisclosure(false);
   const [{ opacity }, drag] = useDrag(
     () => ({
-      type: status,
+      type: dragType,
       item: { id },
       collect: (monitor) => ({
         opacity: monitor.isDragging(),
@@ -80,29 +76,34 @@ function DragItem(props: IProps) {
           </Box>
         </HoverCard.Target>
         <HoverCard.Dropdown>
-          <Group position="right">
-            <Tooltip label="Edit">
-              <ActionIcon
-                variant="light"
-                color="blue"
-                onClick={() => openModalEdit(id)}
-              >
-                <IconEdit size={18} />
-              </ActionIcon>
-            </Tooltip>
-            <Tooltip label="Delete">
-              <ActionIcon
-                variant="light"
-                color="red"
-                onClick={() => {
-                  handlers.open();
-                }}
-              >
-                <IconTrash size={18} />
-              </ActionIcon>
-            </Tooltip>
-          </Group>
-          <Divider my="sm" />
+          {openModalEdit && (
+            <>
+              <Group position="right">
+                <Tooltip label="Edit">
+                  <ActionIcon
+                    variant="light"
+                    color="blue"
+                    onClick={() => openModalEdit(id)}
+                  >
+                    <IconEdit size={18} />
+                  </ActionIcon>
+                </Tooltip>
+                <Tooltip label="Delete">
+                  <ActionIcon
+                    variant="light"
+                    color="red"
+                    onClick={() => {
+                      handlers.open();
+                    }}
+                  >
+                    <IconTrash size={18} />
+                  </ActionIcon>
+                </Tooltip>
+              </Group>
+              <Divider my="sm" />
+            </>
+          )}
+
           <Text size="sm">
             <Text span c="blue" inherit>
               Name:{" "}
@@ -125,12 +126,14 @@ function DragItem(props: IProps) {
           </Text>
         </HoverCard.Dropdown>
       </HoverCard>
-      <ConfirmModal
-        isOpen={opened}
-        onClose={handlers.close}
-        onClickDelete={() => handleDelete(id, handlers.close)}
-        title={"Are you sure you want to delete this item?"}
-      />
+      {handleDelete && (
+        <ConfirmModal
+          isOpen={opened}
+          onClose={handlers.close}
+          onClickDelete={() => handleDelete(id, handlers.close)}
+          title={"Are you sure you want to delete this item?"}
+        />
+      )}
     </>
   );
 }

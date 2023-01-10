@@ -2,13 +2,15 @@ import { createStyles } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
   container: {
-    backgroundColor: theme.colors.lime[7],
     display: "inline-block",
-    height: "100px",
-    border: "1px solid #ccc",
+    border: "1px dashed #ccc",
     "&:hover": {
-      backgroundColor: theme.colors.lime[5],
+      backgroundColor: theme.colors.gray[2],
     },
+  },
+  highlightCell: {
+    borderTop: "1px solid black",
+    boxShadow: "0px -1px 0px 2px black inset",
   },
 }));
 

@@ -1,4 +1,11 @@
 import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+import relativeTime from "dayjs/plugin/relativeTime";
+import isoWeek from "dayjs/plugin/isoWeek";
+
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
+dayjs.extend(isoWeek);
 
 export function convertDurationToPixel(
   start: string | Date | undefined,
@@ -11,7 +18,20 @@ export function convertDurationToPixel(
   const oneHourWidth = rowWidth / duration;
   const oneMinWidth = oneHourWidth / 60;
   const oneSecWidth = oneMinWidth / 60;
-  const width = dayjs(end).diff(dayjs(start), "second") * oneSecWidth;
+  let width = dayjs(end).diff(dayjs(start), "second") * oneSecWidth;
+  const subAtStart =
+    dayjs(start).diff(
+      dayjs(start).hour(durationStart).minute(0).second(0),
+      "second"
+    ) * oneSecWidth;
+  const subAtEnd =
+    dayjs(end)
+      .hour(durationEnd)
+      .minute(0)
+      .second(0)
+      .diff(dayjs(end), "second") * oneSecWidth;
+  if (subAtStart < 0) width += subAtStart;
+  if (subAtEnd < 0) width += subAtEnd;
   return width;
 }
 
@@ -50,15 +70,19 @@ export function convertTimeToPos(
   return pos;
 }
 
-// export function convertPostoTime(
-//   start: number,
-//   scheduleWidth: number,
-//   rowWidth: number
-// ) {
-//   const startTime = start > 0 ? start : 0;
-//   const oneHourWidth = rowWidth / 24;
-//   const oneMinWidth = oneHourWidth / 60;
-//   const oneSecWidth = oneMinWidth / 60;
-//   // const time =
-//   // return time;
-// }
+export function convertPostoTime(
+  pos: number,
+  rowWidth: number,
+  durationStart: number,
+  durationEnd: number
+) {
+  const duration = durationEnd - durationStart;
+  const oneHourWidth = rowWidth / duration;
+  const oneMinWidth = oneHourWidth / 60;
+  const oneSecWidth = oneMinWidth / 60;
+
+  const hour = Math.floor(pos / oneHourWidth) + durationStart;
+  const minute = Math.floor((pos % oneHourWidth) / oneMinWidth);
+  const second = Math.floor(((pos % oneHourWidth) % oneMinWidth) / oneSecWidth);
+  return dayjs().hour(hour).minute(minute).second(second);
+}

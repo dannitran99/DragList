@@ -49,7 +49,7 @@ export default function DrawerCustom(props: IProps) {
     >
       <Flex direction="column" gap="lg">
         <Text>Filter menu</Text>
-        <Calendar value={dateValue} onChange={handleSetDate} />
+        <Calendar value={dateValue} onChange={handleSetDate} fullWidth />
         <Select
           label="Sort item by..."
           placeholder="Pick one"

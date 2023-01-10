@@ -1,48 +1,60 @@
 import { Box } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
-import { useEffect } from "react";
+import dayjs from "dayjs";
 import { useDrop } from "react-dnd";
-import { listGetAll } from "../../../../app/actions/dragList";
-import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
+import { useAppSelector } from "../../../../app/hooks";
 import { RootState } from "../../../../app/store";
 import { TableConstants } from "../../../../constants/dragItem";
 import { IDataList } from "../../../../types/listDrag";
+import { convertPostoTime } from "../../../../utils/convertDate";
+import { compareDay, compareHour } from "../../../../utils/selectDay";
 import Scheduler from "./Scheduler";
 import useStyles from "./styles";
 import TableCell from "./TableCell";
 
 interface IProps {
+  isEvenRow: boolean;
   start: number;
   end: number;
   cellWidth: number;
+  cellHeight: number;
+  date: Date;
 }
 
-export default function TableRow({ start, end, cellWidth }: IProps) {
+export default function TableRow({
+  start,
+  end,
+  cellWidth,
+  cellHeight,
+  date,
+  isEvenRow,
+}: IProps) {
   const { cx, classes } = useStyles();
   const { ref, width, height } = useElementSize();
 
-  const dispatch = useAppDispatch();
   const { data } = useAppSelector((state: RootState) => state.listDrag);
-  useEffect(() => {
-    dispatch(listGetAll());
-  }, [dispatch]);
 
   const cell = [];
   for (let index = start; index < end; index++) {
-    cell.push(<TableCell key={index} cellWidth={cellWidth} />);
+    cell.push(
+      <TableCell
+        key={index}
+        cellWidth={cellWidth}
+        cellHeight={cellHeight}
+        isNow={compareHour(dayjs(date).hour(index).toString(), new Date())}
+      />
+    );
   }
 
   const [{ canDrop }, drop] = useDrop({
     accept: TableConstants.keydrag,
     drop(item: { id: string; left: number; width: number }, monitor) {
-      console.log(item.left);
-
       const delta = monitor.getDifferenceFromInitialOffset() as {
         x: number;
       };
 
       let newleft = Math.round(item.left + delta.x);
-      console.log(newleft);
+      // console.log(convertPostoTime(newleft, width, start, end).format("HH:mm"));
     },
     collect: (monitor) => ({
       canDrop: monitor.canDrop(),
@@ -50,10 +62,19 @@ export default function TableRow({ start, end, cellWidth }: IProps) {
   });
 
   return (
-    <Box ref={ref} className={classes.container}>
+    <Box
+      ref={ref}
+      className={cx(classes.container, { [classes.evenRow]: isEvenRow })}
+      sx={() => ({
+        height: cellHeight,
+      })}
+    >
       {cell}
       {canDrop && <Box ref={drop} className={classes.dropArea}></Box>}
       {data
+        .filter((item: IDataList) => {
+          return compareDay(item.update_at, date);
+        })
         .filter((item: IDataList) => {
           return item.end_at;
         })

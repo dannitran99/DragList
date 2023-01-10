@@ -11,7 +11,10 @@ export const TableDuration = {
 };
 
 export const TableSizing = {
-  tableCell: 100,
+  tableCellWidth: 100,
   minWidthCell: 50,
   maxWidthCell: 200,
+  tableCellHeight: 100,
+  minHeightCell: 50,
+  maxHeightCell: 150,
 };

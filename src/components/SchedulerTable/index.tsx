@@ -1,38 +1,37 @@
-import { Box, RangeSlider, Slider } from "@mantine/core";
-import { useState } from "react";
-import { TableDuration, TableSizing } from "../../constants/selectValue";
-
+import { Flex } from "@mantine/core";
+import TableLeftLabel from "./TableLeftLebel";
 import TableData from "./TableData";
+import useStyles from "./styles";
 
-export default function TableScheduler() {
-  const [cellWidth, setCellWidth] = useState<number>(TableSizing.tableCell);
-  const [timeRange, setTimeRange] = useState<[number, number]>([
-    TableDuration.START,
-    TableDuration.END,
-  ]);
+interface IProps {
+  dateRange: Date[];
+  start: number;
+  end: number;
+  cellWidth: number;
+  cellHeight: number;
+}
+
+export default function TableScheduler({
+  dateRange,
+  start,
+  end,
+  cellWidth,
+  cellHeight,
+}: IProps) {
+  const { cx, classes } = useStyles();
 
   return (
     <>
-      <Box>
+      <Flex className={classes.wrapper}>
+        <TableLeftLabel dateRange={dateRange} cellHeight={cellHeight} />
         <TableData
-          start={timeRange[0]}
-          end={timeRange[1]}
+          dateRange={dateRange}
+          start={start}
+          end={end}
           cellWidth={cellWidth}
+          cellHeight={cellHeight}
         />
-      </Box>
-      <Slider
-        value={cellWidth}
-        onChange={setCellWidth}
-        min={TableSizing.minWidthCell}
-        max={TableSizing.maxWidthCell}
-      />
-      <RangeSlider
-        minRange={1}
-        value={timeRange}
-        onChange={setTimeRange}
-        min={TableDuration.START}
-        max={TableDuration.END}
-      />
+      </Flex>
     </>
   );
 }

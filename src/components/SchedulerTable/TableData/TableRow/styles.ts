@@ -2,9 +2,11 @@ import { createStyles } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
   container: {
-    height: "100px",
     width: "fit-content",
     position: "relative",
+  },
+  evenRow: {
+    backgroundColor: theme.colors.gray[0],
   },
   dropArea: {
     width: "100%",

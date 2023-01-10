@@ -1,23 +1,37 @@
-import { Box, Text } from "@mantine/core";
+import { Box, Divider, ScrollArea, Text } from "@mantine/core";
 import TableRow from "./TableRow";
 import useStyles from "./styles";
+import { useElementSize, useMouse } from "@mantine/hooks";
+import { convertPostoTime } from "../../../utils/convertDate";
+import { useState } from "react";
 
 interface IProps {
   start: number;
   end: number;
   cellWidth: number;
+  cellHeight: number;
+  dateRange: Date[];
 }
 
-export default function TableData({ start, end, cellWidth }: IProps) {
+export default function TableData({
+  start,
+  end,
+  cellWidth,
+  cellHeight,
+  dateRange,
+}: IProps) {
   const { cx, classes } = useStyles();
-
+  const { ref, x } = useMouse();
+  const eTableSize = useElementSize();
+  const [scrollPosition, onScrollPositionChange] = useState({ x: 0, y: 0 });
   const time = [];
+
   for (let index = start; index < end; index++) {
     time.push(
       <Box
         key={index}
         sx={() => ({
-          height: "10px",
+          height: "50px",
           width: cellWidth,
           display: "inline-block",
           position: "relative",
@@ -33,10 +47,38 @@ export default function TableData({ start, end, cellWidth }: IProps) {
   }
 
   return (
-    <Box className={classes.container}>
+    <ScrollArea
+      className={classes.container}
+      onScrollPositionChange={onScrollPositionChange}
+      offsetScrollbars
+      ref={ref}
+    >
       <Box className={classes.tableHead}>{time}</Box>
-      <TableRow start={start} end={end} cellWidth={cellWidth} />
-      <TableRow start={start} end={end} cellWidth={cellWidth} />
-    </Box>
+      {dateRange.map((item: Date, idx: number) => (
+        <Box ref={eTableSize.ref} key={idx}>
+          <TableRow
+            isEvenRow={idx % 2 == 0}
+            date={item}
+            start={start}
+            end={end}
+            cellWidth={cellWidth}
+            cellHeight={cellHeight}
+          />
+        </Box>
+      ))}
+      <Box
+        className={classes.cursorTable}
+        sx={() => ({
+          left: `${x}px`,
+        })}
+      >
+        {convertPostoTime(
+          x + scrollPosition.x,
+          eTableSize.width,
+          start,
+          end
+        ).format("HH:mm")}
+      </Box>
+    </ScrollArea>
   );
 }

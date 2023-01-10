@@ -2,12 +2,12 @@ import { createStyles } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
   container: {
+    position: "relative",
     whiteSpace: "nowrap",
-    overflowX: "auto",
-    marginLeft: "100px",
-    padding: theme.spacing.xs,
+    overflowX: "hidden",
   },
   tableHead: {
+    height: "50px",
     width: "fit-content",
   },
   titleTableHead: {
@@ -23,6 +23,14 @@ const useStyles = createStyles((theme) => ({
     bottom: "20%",
     transform: "translate(0%,50%)",
     zIndex: 99,
+  },
+  cursorTable: {
+    width: 0,
+    height: "100%",
+    position: "absolute",
+    top: 0,
+    borderLeft: "1px dashed red",
+    transform: "translate(3px,0%)",
   },
 }));
 
