@@ -24,6 +24,8 @@ interface IProps {
   cellWidth: number;
   cellHeight: number;
   date: Date;
+  handleDelete?(id: string, handlers: () => void): void;
+  openModalEdit?(id: string): void;
 }
 
 export default function TableRow({
@@ -33,9 +35,11 @@ export default function TableRow({
   cellHeight,
   date,
   isEvenRow,
+  handleDelete,
+  openModalEdit,
 }: IProps) {
   const { cx, classes } = useStyles();
-  const { ref, width, height } = useElementSize();
+  const { ref, width } = useElementSize();
   const dispatch = useAppDispatch();
   const { data } = useAppSelector((state: RootState) => state.listDrag);
 
@@ -131,7 +135,9 @@ export default function TableRow({
       )}
       {data
         .filter((item: IDataList) => {
-          return !compareDay(item.update_at, date);
+          return (
+            !compareDay(item.update_at, date) || !compareDay(item.end_at, date)
+          );
         })
         .filter((item: IDataList) => {
           return item.end_at;
@@ -141,9 +147,11 @@ export default function TableRow({
             key={idx}
             data={item}
             parentWidth={width}
-            parentHeight={height}
             start={start}
             end={end}
+            openModalEdit={openModalEdit}
+            handleDelete={handleDelete}
+            date={date}
           />
         ))}
     </Box>

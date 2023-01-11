@@ -15,9 +15,11 @@ import {
 import { Calendar } from "@mantine/dates";
 import { useDisclosure, useToggle } from "@mantine/hooks";
 import { IconChevronDown, IconChevronUp, IconPlus } from "@tabler/icons";
+import _ from "lodash";
 import { useEffect, useState } from "react";
-import { listGetAll } from "../../app/actions/dragList";
+import { addItem, listGetAll } from "../../app/actions/dragList";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { setId } from "../../app/slices/listDrag";
 import { RootState } from "../../app/store";
 import AddModal from "../../components/AddModal";
 import DragItem from "../../components/DragItem";
@@ -28,7 +30,7 @@ import { IDataList } from "../../types/listDrag";
 import { selectWeek } from "../../utils/selectDay";
 import useStyles from "./styles";
 export default function TableScheduler() {
-  const { cx, classes } = useStyles();
+  const { classes } = useStyles();
   const { data } = useAppSelector((state: RootState) => state.listDrag);
   const dispatch = useAppDispatch();
   const [openedModal, handlersModal] = useDisclosure(false);
@@ -54,6 +56,20 @@ export default function TableScheduler() {
   useEffect(() => {
     dispatch(listGetAll());
   }, [dispatch]);
+
+  const handleDeleteItem = (id: string, handler: () => void) => {
+    let newData: IDataList[] = _.cloneDeep(data);
+    let index = newData.map((item: IDataList) => item.id).indexOf(id);
+    if (index > -1) newData.splice(index, 1);
+    handler();
+    dispatch(addItem(newData));
+  };
+
+  const handleEdit = (id: string) => {
+    dispatch(setId(id));
+    handlersModal.open();
+  };
+
   return (
     <Box className={classes.container}>
       <Grid gutter="xl">
@@ -135,6 +151,8 @@ export default function TableScheduler() {
                         key={idx}
                         data={item}
                         date={item.create_at}
+                        openModalEdit={handleEdit}
+                        handleDelete={handleDeleteItem}
                         dragType={TableConstants.keydrag}
                       />
                     ))}
@@ -151,6 +169,8 @@ export default function TableScheduler() {
               end={timeRange[1]}
               cellWidth={cellWidth}
               cellHeight={cellHeight}
+              openModalEdit={handleEdit}
+              handleDelete={handleDeleteItem}
             />
           </Paper>
         </Grid.Col>

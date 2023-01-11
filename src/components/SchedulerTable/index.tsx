@@ -10,6 +10,8 @@ interface IProps {
   end: number;
   cellWidth: number;
   cellHeight: number;
+  handleDelete?(id: string, handlers: () => void): void;
+  openModalEdit?(id: string): void;
 }
 
 export default function TableScheduler({
@@ -18,8 +20,10 @@ export default function TableScheduler({
   end,
   cellWidth,
   cellHeight,
+  handleDelete,
+  openModalEdit,
 }: IProps) {
-  const { cx, classes } = useStyles();
+  const { classes } = useStyles();
   const { hovered, ref } = useHover();
   return (
     <>
@@ -32,6 +36,8 @@ export default function TableScheduler({
           cellWidth={cellWidth}
           cellHeight={cellHeight}
           isHovered={hovered}
+          openModalEdit={openModalEdit}
+          handleDelete={handleDelete}
         />
       </Flex>
     </>

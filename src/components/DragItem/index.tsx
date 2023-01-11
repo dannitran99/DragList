@@ -25,7 +25,7 @@ interface IProps {
 
 function DragItem(props: IProps) {
   const { data, handleDelete, openModalEdit, date, dragType } = props;
-  const { name, description, status, id } = data;
+  const { name, description, id } = data;
   const { cx, classes } = useStyles();
   const { hovered, ref } = useHover();
   const [opened, handlers] = useDisclosure(false);
