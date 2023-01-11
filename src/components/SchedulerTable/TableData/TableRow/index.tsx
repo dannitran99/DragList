@@ -1,7 +1,8 @@
 import { Box } from "@mantine/core";
-import { useElementSize } from "@mantine/hooks";
+import { useElementSize, useMove } from "@mantine/hooks";
 import dayjs from "dayjs";
 import _ from "lodash";
+import { useEffect, useState } from "react";
 import { useDrop } from "react-dnd";
 import { addItem } from "../../../../app/actions/dragList";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
@@ -40,9 +41,12 @@ export default function TableRow({
 }: IProps) {
   const { cx, classes } = useStyles();
   const { ref, width } = useElementSize();
+  const [value, setValue] = useState<{ x: number }>({ x: 0 });
+  const mouseMove = useMove(setValue);
   const dispatch = useAppDispatch();
   const { data } = useAppSelector((state: RootState) => state.listDrag);
 
+  useEffect(() => {}, [mouseMove.active]);
   const cell = [];
   for (let index = start; index < end; index++) {
     cell.push(
@@ -120,7 +124,18 @@ export default function TableRow({
         height: cellHeight,
       })}
     >
-      {cell}
+      <Box ref={mouseMove.ref} className={classes.containerRow}>
+        {cell}
+        {mouseMove.active && (
+          <Box
+            className={classes.itemCreatePreview}
+            sx={{
+              width: cellWidth,
+              left: `calc(${value.x * 100}% + 3px)`,
+            }}
+          ></Box>
+        )}
+      </Box>
       {canDrop && compareDay(date, new Date()) >= 0 && (
         <Box
           ref={drop}

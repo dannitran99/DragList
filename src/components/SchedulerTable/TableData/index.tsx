@@ -29,21 +29,12 @@ export default function TableData({
   const { classes } = useStyles();
   const { ref, x } = useMouse();
 
-  //create new item by drag on table
-  const [value, setValue] = useState({ x: 0, y: 0 });
-
-  const mouseMove = useMove(setValue);
-
   const eTableSize = useElementSize();
   const [scrollPosition, onScrollPositionChange] = useState<{
     x: number;
     y: number;
   }>({ x: 0, y: 0 });
   const time = [];
-
-  useEffect(() => {
-    console.log(value.x, value.y);
-  }, [mouseMove.active]);
 
   for (let index = start; index < end; index++) {
     time.push(
@@ -73,33 +64,21 @@ export default function TableData({
       ref={ref}
     >
       <Box className={classes.tableHead}>{time}</Box>
-      <Box ref={mouseMove.ref} className={classes.containerRow}>
-        {dateRange.map((item: Date, idx: number) => (
-          <Box ref={eTableSize.ref} key={idx}>
-            <TableRow
-              isEvenRow={idx % 2 === 0}
-              date={item}
-              start={start}
-              end={end}
-              cellWidth={cellWidth}
-              cellHeight={cellHeight}
-              openModalEdit={openModalEdit}
-              handleDelete={handleDelete}
-            />
-          </Box>
-        ))}
-        {mouseMove.active && (
-          <Box
-            className={classes.itemCreatePreview}
-            sx={{
-              height: cellHeight,
-              width: cellWidth,
-              left: `calc(${value.x * 100}%)`,
-              top: `calc(${value.y * 100}% )`,
-            }}
-          ></Box>
-        )}
-      </Box>
+      {dateRange.map((item: Date, idx: number) => (
+        <Box ref={eTableSize.ref} key={idx}>
+          <TableRow
+            isEvenRow={idx % 2 === 0}
+            date={item}
+            start={start}
+            end={end}
+            cellWidth={cellWidth}
+            cellHeight={cellHeight}
+            openModalEdit={openModalEdit}
+            handleDelete={handleDelete}
+          />
+        </Box>
+      ))}
+
       {isHovered && (
         <Box
           className={classes.cursorTable}

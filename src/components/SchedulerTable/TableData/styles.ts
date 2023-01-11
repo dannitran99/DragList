@@ -32,13 +32,6 @@ const useStyles = createStyles((theme) => ({
     borderLeft: "1px dashed red",
     transform: "translate(3px,0%)",
   },
-  containerRow: {
-    position: "relative",
-  },
-  itemCreatePreview: {
-    position: "absolute",
-    backgroundColor: "red",
-  },
 }));
 
 export default useStyles;
