@@ -7,12 +7,14 @@ import { useForm } from "@mantine/form";
 import { addItem } from "../../app/actions/dragList";
 import { IDataList } from "../../types/listDrag";
 import { useEffect } from "react";
-import { setId } from "../../app/slices/listDrag";
+import { setIdSelect } from "../../app/slices/listDrag";
 import _ from "lodash";
 
 interface IModal {
   isOpened: boolean;
   setOpened(): void;
+  updateAt?: string;
+  endAt?: string;
 }
 interface IDataModal {
   name: string;
@@ -20,7 +22,7 @@ interface IDataModal {
 }
 
 function AddModal(props: IModal) {
-  const { isOpened, setOpened } = props;
+  const { isOpened, setOpened, updateAt, endAt } = props;
   const dispatch = useAppDispatch();
   const { data, idSelect } = useAppSelector(
     (state: RootState) => state.listDrag
@@ -45,7 +47,7 @@ function AddModal(props: IModal) {
         });
       }
     } else {
-      dispatch(setId(""));
+      dispatch(setIdSelect(""));
       form.reset();
     }
   }, [isOpened, dispatch]);
@@ -58,13 +60,25 @@ function AddModal(props: IModal) {
       newData[index].description = val.description;
       dispatch(addItem(newData));
     } else {
-      const newData: IDataList = {
-        id: randomId(),
-        ...val,
-        status: "onQueue",
-        create_at: new Date().toISOString(),
-      };
-      dispatch(addItem([newData, ...data]));
+      if (updateAt) {
+        const newData: IDataList = {
+          id: randomId(),
+          ...val,
+          status: "onDone",
+          update_at: updateAt,
+          end_at: endAt,
+          create_at: new Date().toISOString(),
+        };
+        dispatch(addItem([newData, ...data]));
+      } else {
+        const newData: IDataList = {
+          id: randomId(),
+          ...val,
+          status: "onQueue",
+          create_at: new Date().toISOString(),
+        };
+        dispatch(addItem([newData, ...data]));
+      }
     }
     form.reset();
     setOpened();

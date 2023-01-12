@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
 import isoWeek from "dayjs/plugin/isoWeek";
-import { compareDay } from "./selectDay";
+import { compareDay, compareHour } from "./selectDay";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -32,14 +32,15 @@ export function convertDurationToPixel(
       .minute(0)
       .second(0)
       .diff(dayjs(end), "second") * oneSecWidth;
-  if (subAtStart < 0) width += subAtStart;
-  if (subAtEnd < 0) width += subAtEnd;
+  if (subAtStart < 0 && !compareDay(start, dateCompare)) width += subAtStart;
+  if (subAtEnd < 0 && !compareDay(end, dateCompare)) width += subAtEnd;
   if (compareDay(start, dateCompare) !== 0) {
     width +=
       dayjs(start).diff(
         dayjs(dateCompare).hour(0).minute(0).second(0),
         "second"
       ) * oneSecWidth;
+
     width -= durationStart * oneHourWidth;
   }
   if (compareDay(end, dateCompare) !== 0) {
@@ -62,29 +63,24 @@ export function checkToDisplaySchedule(
   durationEnd: number,
   dateCompare: Date
 ) {
+  const compareDayStart = dayjs(dateCompare)
+    .hour(durationStart)
+    .minute(0)
+    .second(0)
+    .toDate();
+  const compareDayEnd = dayjs(dateCompare)
+    .hour(durationEnd)
+    .minute(0)
+    .second(0)
+    .toDate();
   let check = false;
   if (
-    (dayjs(start).hour() >= durationStart &&
-      dayjs(start).hour() < durationEnd) ||
-    (dayjs(end).hour() >= durationStart && dayjs(end).hour() < durationEnd) ||
-    (dayjs(start).hour() < durationStart && dayjs(end).hour() >= durationEnd)
-  ) {
-    check = true;
-  }
-  if (
-    (compareDay(start, dateCompare) !== 0 &&
-      dayjs(end).hour() < durationStart) ||
-    (compareDay(end, dateCompare) !== 0 && dayjs(start).hour() >= durationEnd)
-  ) {
-    check = false;
-  }
-  if (
-    (compareDay(start, end) !== 0 &&
-      dayjs(start).hour() < durationEnd &&
-      compareDay(end, dateCompare) !== 0) ||
-    (compareDay(start, end) !== 0 &&
-      dayjs(end).hour() >= durationStart &&
-      compareDay(start, dateCompare) !== 0)
+    (compareHour(dayjs(start).toDate(), compareDayStart) >= 0 &&
+      compareHour(dayjs(start).toDate(), compareDayEnd) < 0) ||
+    (compareHour(dayjs(end).toDate(), compareDayStart) >= 0 &&
+      compareHour(dayjs(end).toDate(), compareDayEnd) < 0) ||
+    (compareHour(dayjs(start).toDate(), compareDayStart) < 0 &&
+      compareHour(dayjs(end).toDate(), compareDayEnd) >= 0)
   ) {
     check = true;
   }

@@ -7,6 +7,7 @@ interface IListDrag {
   data: IDataList[];
   filter: null | IDataList[];
   idSelect: string;
+  idDrag: string;
   loading: boolean;
 }
 
@@ -15,14 +16,18 @@ const initialState: IListDrag = {
   data: [],
   filter: null,
   idSelect: "",
+  idDrag: "",
 };
 
 export const listDrag = createSlice({
   name: "listDrag",
   initialState,
   reducers: {
-    setId: (state, { payload }: PayloadAction<string>) => {
+    setIdSelect: (state, { payload }: PayloadAction<string>) => {
       state.idSelect = payload;
+    },
+    setIdDrag: (state, { payload }: PayloadAction<string>) => {
+      state.idDrag = payload;
     },
     setFilter: (state, { payload }: PayloadAction<IDataList[] | null>) => {
       state.filter = payload;
@@ -53,5 +58,5 @@ export const listDrag = createSlice({
 });
 
 export const selectUser = (state: { list: IListDrag }) => state.list;
-export const { setId, setFilter } = listDrag.actions;
+export const { setIdSelect, setFilter, setIdDrag } = listDrag.actions;
 export default listDrag.reducer;

@@ -12,9 +12,6 @@ const useStyles = createStyles((theme) => ({
     boxShadow:
       "rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px",
     "&:hover": {
-      div: {
-        width: theme.spacing.xl,
-      },
       backgroundColor: theme.colors.blue[4],
     },
   },

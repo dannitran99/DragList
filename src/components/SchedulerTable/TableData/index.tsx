@@ -1,9 +1,9 @@
 import { Box, ScrollArea, Text } from "@mantine/core";
 import TableRow from "./TableRow";
 import useStyles from "./styles";
-import { useElementSize, useMouse, useMove } from "@mantine/hooks";
+import { useElementSize, useMouse } from "@mantine/hooks";
 import { convertPostoTime } from "../../../utils/convertDate";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface IProps {
   start: number;
@@ -75,6 +75,7 @@ export default function TableData({
             cellHeight={cellHeight}
             openModalEdit={openModalEdit}
             handleDelete={handleDelete}
+            mousePos={x + scrollPosition.x}
           />
         </Box>
       ))}
@@ -85,6 +86,7 @@ export default function TableData({
           sx={() => ({
             left: `${x}px`,
           })}
+          draggable={false}
         >
           {convertPostoTime(
             x + scrollPosition.x + 3,

@@ -35,3 +35,18 @@ export function compareExact(
 ) {
   return dayjs(date1).diff(dayjs(date2), "second");
 }
+
+export function checkDayInDuration(
+  dayCheck: string | Date | undefined,
+  start: string | Date | undefined,
+  end: string | Date | undefined
+) {
+  return compareDay(dayCheck, start) >= 0 && compareDay(dayCheck, end) <= 0;
+}
+export function checkDayBetween(
+  dayCheck: string | Date | undefined,
+  start: string | Date | undefined,
+  end: string | Date | undefined
+) {
+  return compareDay(dayCheck, start) > 0 && compareDay(dayCheck, end) < 0;
+}

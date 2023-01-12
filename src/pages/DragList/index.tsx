@@ -22,7 +22,7 @@ import { ItemTypes } from "../../constants/dragItem";
 import _ from "lodash";
 import useStyles from "./styles";
 import { IconMenu2, IconPlus } from "@tabler/icons";
-import { setFilter, setId } from "../../app/slices/listDrag";
+import { setFilter, setIdSelect } from "../../app/slices/listDrag";
 import DrawerCustom from "../../components/Drawer";
 import { useSearchParams } from "react-router-dom";
 import dayjs from "dayjs";
@@ -93,7 +93,7 @@ function DragList() {
   };
 
   const handleEdit = (id: string) => {
-    dispatch(setId(id));
+    dispatch(setIdSelect(id));
     handlersModal.open();
   };
 

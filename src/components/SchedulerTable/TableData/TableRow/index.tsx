@@ -1,8 +1,8 @@
 import { Box } from "@mantine/core";
-import { useElementSize, useMove } from "@mantine/hooks";
+import { useDisclosure, useElementSize } from "@mantine/hooks";
 import dayjs from "dayjs";
 import _ from "lodash";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDrop } from "react-dnd";
 import { addItem } from "../../../../app/actions/dragList";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
@@ -10,10 +10,16 @@ import { RootState } from "../../../../app/store";
 import { ItemTypes, TableConstants } from "../../../../constants/dragItem";
 import { IDataList } from "../../../../types/listDrag";
 import {
+  checkToDisplaySchedule,
   convertPostoTime,
   convertTimeToPos,
 } from "../../../../utils/convertDate";
-import { compareDay, compareHour } from "../../../../utils/selectDay";
+import {
+  checkDayInDuration,
+  compareDay,
+  compareHour,
+} from "../../../../utils/selectDay";
+import AddModal from "../../../AddModal";
 import Scheduler from "./Scheduler";
 import useStyles from "./styles";
 import TableCell from "./TableCell";
@@ -27,6 +33,7 @@ interface IProps {
   date: Date;
   handleDelete?(id: string, handlers: () => void): void;
   openModalEdit?(id: string): void;
+  mousePos: number;
 }
 
 export default function TableRow({
@@ -36,17 +43,20 @@ export default function TableRow({
   cellHeight,
   date,
   isEvenRow,
+  mousePos,
   handleDelete,
   openModalEdit,
 }: IProps) {
   const { cx, classes } = useStyles();
   const { ref, width } = useElementSize();
-  const [value, setValue] = useState<{ x: number }>({ x: 0 });
-  const mouseMove = useMove(setValue);
+  const [openedModal, handlersModal] = useDisclosure(false);
+  const [isCreateItem, setIsCreateItem] = useState<boolean>(false);
+  const [posItemPreview, setPosItemPreview] = useState<number>(0);
+  const [posEnd, setPosEnd] = useState<number>(0);
+  const [widthItemPreview, setWidthItemPreview] = useState<number>(0);
   const dispatch = useAppDispatch();
   const { data } = useAppSelector((state: RootState) => state.listDrag);
 
-  useEffect(() => {}, [mouseMove.active]);
   const cell = [];
   for (let index = start; index < end; index++) {
     cell.push(
@@ -113,6 +123,28 @@ export default function TableRow({
     }),
   });
 
+  const handleMouseDown = () => {
+    setIsCreateItem(true);
+    setPosItemPreview(mousePos + 3);
+    setWidthItemPreview(0);
+  };
+
+  const handleMouseMove = () => {
+    if (isCreateItem) {
+      setWidthItemPreview(Math.abs(mousePos - posItemPreview));
+    }
+  };
+
+  const handleMouseUp = () => {
+    setPosEnd(mousePos);
+    handlersModal.open();
+  };
+
+  const onModalClose = () => {
+    setIsCreateItem(false);
+    handlersModal.close();
+  };
+
   return (
     <Box
       ref={ref}
@@ -124,14 +156,19 @@ export default function TableRow({
         height: cellHeight,
       })}
     >
-      <Box ref={mouseMove.ref} className={classes.containerRow}>
+      <Box
+        className={classes.containerRow}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+      >
         {cell}
-        {mouseMove.active && (
+        {isCreateItem && (
           <Box
             className={classes.itemCreatePreview}
             sx={{
-              width: cellWidth,
-              left: `calc(${value.x * 100}% + 3px)`,
+              width: widthItemPreview,
+              left: posItemPreview,
             }}
           ></Box>
         )}
@@ -151,11 +188,16 @@ export default function TableRow({
       {data
         .filter((item: IDataList) => {
           return (
-            !compareDay(item.update_at, date) || !compareDay(item.end_at, date)
+            checkDayInDuration(date, item.update_at, item.end_at) &&
+            item.end_at &&
+            checkToDisplaySchedule(
+              item.update_at,
+              item.end_at,
+              start,
+              end,
+              date
+            )
           );
-        })
-        .filter((item: IDataList) => {
-          return item.end_at;
         })
         .map((item: IDataList, idx: number) => (
           <Scheduler
@@ -169,6 +211,26 @@ export default function TableRow({
             date={date}
           />
         ))}
+      <AddModal
+        isOpened={openedModal}
+        setOpened={onModalClose}
+        updateAt={
+          posItemPreview
+            ? convertPostoTime(
+                posItemPreview,
+                width,
+                start,
+                end,
+                date
+              ).toISOString()
+            : undefined
+        }
+        endAt={
+          posEnd
+            ? convertPostoTime(posEnd, width, start, end, date).toISOString()
+            : undefined
+        }
+      />
     </Box>
   );
 }

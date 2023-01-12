@@ -19,7 +19,7 @@ import _ from "lodash";
 import { useEffect, useState } from "react";
 import { addItem, listGetAll } from "../../app/actions/dragList";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { setId } from "../../app/slices/listDrag";
+import { setIdSelect } from "../../app/slices/listDrag";
 import { RootState } from "../../app/store";
 import AddModal from "../../components/AddModal";
 import DragItem from "../../components/DragItem";
@@ -66,7 +66,7 @@ export default function TableScheduler() {
   };
 
   const handleEdit = (id: string) => {
-    dispatch(setId(id));
+    dispatch(setIdSelect(id));
     handlersModal.open();
   };
 
