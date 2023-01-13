@@ -25,7 +25,16 @@ const useStyles = createStyles((theme) => ({
   },
   infoItem: {
     height: "80%",
-    padding: ` 0 ${theme.spacing.xs}px`,
+    userSelect: "none",
+  },
+  dragTarget: {
+    height: "100%",
+    width: "100%",
+  },
+  resizeBox: {
+    width: "2px",
+    height: "100%",
+    cursor: "e-resize",
   },
 }));
 

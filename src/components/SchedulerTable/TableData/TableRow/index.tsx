@@ -1,4 +1,4 @@
-import { Box } from "@mantine/core";
+import { Box, Divider } from "@mantine/core";
 import { useDisclosure, useElementSize } from "@mantine/hooks";
 import dayjs from "dayjs";
 import _ from "lodash";
@@ -140,7 +140,7 @@ export default function TableRow({
 
   const handleMouseMove = () => {
     if (isCreateItem) {
-      setWidthItemPreview(Math.abs(mousePos - posItemPreview));
+      setWidthItemPreview(Math.abs(mousePos - posItemPreview + 3));
       if (mousePos - posItemPreview > 0) {
         setIsDragReverse(false);
       } else {
@@ -162,7 +162,7 @@ export default function TableRow({
   };
 
   const handleMouseUp = () => {
-    setPosEnd(mousePos);
+    setPosEnd(mousePos + 3);
     if (isItemValid) {
       handlersModal.open();
     } else {
@@ -206,7 +206,9 @@ export default function TableRow({
                 ? posItemPreview - widthItemPreview
                 : posItemPreview,
             }}
-          ></Box>
+          >
+            <Divider size={10} color={isItemValid ? "violet" : "black"} />
+          </Box>
         )}
       </Box>
       {canDrop && compareDay(date, new Date()) >= 0 && (
@@ -245,6 +247,7 @@ export default function TableRow({
             openModalEdit={openModalEdit}
             handleDelete={handleDelete}
             date={date}
+            mousePos={mousePos}
           />
         ))}
       <AddModal

@@ -41,6 +41,7 @@ interface IProps {
   date: Date;
   handleDelete?(id: string, handlers: () => void): void;
   openModalEdit?(id: string): void;
+  mousePos: number;
 }
 export default function Scheduler({
   data,
@@ -50,6 +51,7 @@ export default function Scheduler({
   date,
   handleDelete,
   openModalEdit,
+  mousePos,
 }: IProps) {
   const dispatch = useAppDispatch();
   const { idDrag } = useAppSelector((state: RootState) => state.listDrag);
@@ -95,7 +97,7 @@ export default function Scheduler({
           <HoverCard width={300} position="bottom" withArrow shadow="md">
             <HoverCard.Target>
               <Box
-                ref={isDisable >= 0 ? drag : null}
+                ref={isDisable >= 0 ? dragPreview : null}
                 sx={() => ({
                   left,
                   width,
@@ -105,94 +107,99 @@ export default function Scheduler({
                 })}
               >
                 <Divider size={10} color={isDisable >= 0 ? "indigo" : "dark"} />
-                <Flex
-                  justify="center"
-                  align="center"
-                  className={classes.infoItem}
-                >
-                  {width > 50 ? (
-                    <Text truncate fw={500}>
-                      {name}
-                    </Text>
-                  ) : (
-                    <ActionIcon variant="transparent" radius="xl" size="xs">
-                      <IconInfoCircle color="black" size="15" />
-                    </ActionIcon>
-                  )}
+                <Flex align="center" className={classes.infoItem}>
+                  <Box className={classes.resizeBox}></Box>
+                  <Flex
+                    justify="center"
+                    align="center"
+                    className={classes.dragTarget}
+                    ref={isDisable >= 0 ? drag : null}
+                  >
+                    {width > 50 ? (
+                      <Text truncate fw={500}>
+                        {name}
+                      </Text>
+                    ) : (
+                      <IconInfoCircle color="black" size="20" />
+                    )}
+                  </Flex>
+                  <Box className={classes.resizeBox}></Box>
                 </Flex>
               </Box>
             </HoverCard.Target>
             <HoverCard.Dropdown>
-              {openModalEdit && (
-                <>
-                  <Group position="right">
-                    <Tooltip label="Edit">
-                      <ActionIcon
-                        variant="light"
-                        color="blue"
-                        onClick={() => openModalEdit(id)}
-                      >
-                        <IconEdit size={18} />
-                      </ActionIcon>
-                    </Tooltip>
-                    <Tooltip label="Delete">
-                      <ActionIcon
-                        variant="light"
-                        color="red"
-                        onClick={() => {
-                          handlers.open();
-                        }}
-                      >
-                        <IconTrash size={18} />
-                      </ActionIcon>
-                    </Tooltip>
-                  </Group>
-                  <Divider my="sm" />
-                </>
-              )}
-              {isDisable >= 0 ? (
-                <Text fw="500">Time (Expected) </Text>
-              ) : (
-                <Text fw="500">Time</Text>
-              )}
-              <Group
-                sx={(theme) => ({
-                  marginTop: theme.spacing.xs,
-                })}
-                position="apart"
-              >
-                <Badge
-                  size="lg"
-                  radius="xl"
-                  color="blue"
-                  variant="outline"
-                  leftSection={<IconClockPlay size={16} />}
+              <Box sx={{ userSelect: "none" }}>
+                {openModalEdit && (
+                  <>
+                    <Group position="right">
+                      <Tooltip label="Edit">
+                        <ActionIcon
+                          variant="light"
+                          color="blue"
+                          onClick={() => openModalEdit(id)}
+                        >
+                          <IconEdit size={18} />
+                        </ActionIcon>
+                      </Tooltip>
+                      <Tooltip label="Delete">
+                        <ActionIcon
+                          variant="light"
+                          color="red"
+                          onClick={() => {
+                            handlers.open();
+                          }}
+                        >
+                          <IconTrash size={18} />
+                        </ActionIcon>
+                      </Tooltip>
+                    </Group>
+                    <Divider my="sm" />
+                  </>
+                )}
+                {isDisable >= 0 ? (
+                  <Text fw="500">Time (Expected) </Text>
+                ) : (
+                  <Text fw="500">Time</Text>
+                )}
+                <Group
+                  sx={(theme) => ({
+                    marginTop: theme.spacing.xs,
+                  })}
+                  position="apart"
                 >
-                  {dayjs(update_at).format("HH:mm DD/MM")}
-                </Badge>
-                <Badge
-                  size="lg"
-                  radius="xl"
-                  color="blue"
-                  variant="outline"
-                  leftSection={<IconClockStop size={16} />}
-                >
-                  {dayjs(end_at).format("HH:mm DD/MM")}
-                </Badge>
-              </Group>
-              <Divider my="md" />
-              <Text size="sm">
-                <Text span c="blue" inherit>
-                  Name:{" "}
+                  <Badge
+                    size="lg"
+                    radius="xl"
+                    color="blue"
+                    variant="outline"
+                    leftSection={<IconClockPlay size={16} />}
+                  >
+                    {dayjs(update_at).format("HH:mm DD/MM")}
+                  </Badge>
+                  <Badge
+                    size="lg"
+                    radius="xl"
+                    color="blue"
+                    variant="outline"
+                    leftSection={<IconClockStop size={16} />}
+                  >
+                    {dayjs(end_at).format("HH:mm DD/MM")}
+                  </Badge>
+                </Group>
+                <Divider my="md" />
+                <Text size="sm">
+                  <Text span c="blue" inherit>
+                    Name:{" "}
+                  </Text>
+                  {name}
                 </Text>
-                {name}
-              </Text>
-              <Text size="sm">
-                <Text span c="blue" inherit>
-                  Description:{" "}
+                <Text size="sm">
+                  <Text span c="blue" inherit>
+                    Description:{" "}
+                  </Text>
+                  {description}
                 </Text>
-                {description}
-              </Text>
+              </Box>
             </HoverCard.Dropdown>
           </HoverCard>
           {handleDelete && (
