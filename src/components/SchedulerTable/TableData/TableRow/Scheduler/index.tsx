@@ -3,6 +3,7 @@ import {
   Badge,
   Box,
   Divider,
+  Flex,
   Group,
   HoverCard,
   Text,
@@ -13,6 +14,7 @@ import {
   IconClockPlay,
   IconClockStop,
   IconEdit,
+  IconInfoCircle,
   IconTrash,
 } from "@tabler/icons";
 import dayjs from "dayjs";
@@ -63,6 +65,7 @@ export default function Scheduler({
     end,
     date
   );
+  const isDisable = compareExact(update_at, new Date());
   const [{ isDragging }, drag, dragPreview] = useDrag(
     () => ({
       type: TableConstants.keydrag,
@@ -92,18 +95,31 @@ export default function Scheduler({
           <HoverCard width={300} position="bottom" withArrow shadow="md">
             <HoverCard.Target>
               <Box
-                ref={compareExact(update_at, new Date()) >= 0 ? drag : null}
+                ref={isDisable >= 0 ? drag : null}
                 sx={() => ({
                   left,
                   width,
-                  height: "90%",
                 })}
                 className={cx(classes.scheduler, {
-                  [classes.disableDrag]:
-                    compareExact(update_at, new Date()) < 0,
+                  [classes.disableDrag]: isDisable < 0,
                 })}
               >
-                {name}
+                <Divider size={10} color={isDisable >= 0 ? "indigo" : "dark"} />
+                <Flex
+                  justify="center"
+                  align="center"
+                  className={classes.infoItem}
+                >
+                  {width > 50 ? (
+                    <Text truncate fw={500}>
+                      {name}
+                    </Text>
+                  ) : (
+                    <ActionIcon variant="transparent" radius="xl" size="xs">
+                      <IconInfoCircle color="black" size="15" />
+                    </ActionIcon>
+                  )}
+                </Flex>
               </Box>
             </HoverCard.Target>
             <HoverCard.Dropdown>
@@ -134,7 +150,7 @@ export default function Scheduler({
                   <Divider my="sm" />
                 </>
               )}
-              {compareExact(update_at, new Date()) >= 0 ? (
+              {isDisable >= 0 ? (
                 <Text fw="500">Time (Expected) </Text>
               ) : (
                 <Text fw="500">Time</Text>

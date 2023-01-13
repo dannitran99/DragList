@@ -17,6 +17,7 @@ import {
 import {
   checkDayInDuration,
   compareDay,
+  compareExact,
   compareHour,
 } from "../../../../utils/selectDay";
 import AddModal from "../../../AddModal";
@@ -51,6 +52,8 @@ export default function TableRow({
   const { ref, width } = useElementSize();
   const [openedModal, handlersModal] = useDisclosure(false);
   const [isCreateItem, setIsCreateItem] = useState<boolean>(false);
+  const [isItemValid, setIsItemValid] = useState<boolean>(false);
+  const [isDragReverse, setIsDragReverse] = useState<boolean>(false);
   const [posItemPreview, setPosItemPreview] = useState<number>(0);
   const [posEnd, setPosEnd] = useState<number>(0);
   const [widthItemPreview, setWidthItemPreview] = useState<number>(0);
@@ -124,6 +127,12 @@ export default function TableRow({
   });
 
   const handleMouseDown = () => {
+    setIsItemValid(
+      compareExact(
+        convertPostoTime(mousePos + 3, width, start, end, date).toDate(),
+        new Date()
+      ) > 0
+    );
     setIsCreateItem(true);
     setPosItemPreview(mousePos + 3);
     setWidthItemPreview(0);
@@ -132,15 +141,38 @@ export default function TableRow({
   const handleMouseMove = () => {
     if (isCreateItem) {
       setWidthItemPreview(Math.abs(mousePos - posItemPreview));
+      if (mousePos - posItemPreview > 0) {
+        setIsDragReverse(false);
+      } else {
+        setIsItemValid(
+          compareExact(
+            convertPostoTime(
+              posItemPreview - widthItemPreview,
+              width,
+              start,
+              end,
+              date
+            ).toDate(),
+            new Date()
+          ) > 0
+        );
+        setIsDragReverse(true);
+      }
     }
   };
 
   const handleMouseUp = () => {
     setPosEnd(mousePos);
-    handlersModal.open();
+    if (isItemValid) {
+      handlersModal.open();
+    } else {
+      setIsItemValid(false);
+      setIsCreateItem(false);
+    }
   };
 
   const onModalClose = () => {
+    setIsItemValid(false);
     setIsCreateItem(false);
     handlersModal.close();
   };
@@ -165,10 +197,14 @@ export default function TableRow({
         {cell}
         {isCreateItem && (
           <Box
-            className={classes.itemCreatePreview}
+            className={cx(classes.itemCreatePreview, {
+              [classes.invalidItem]: !isItemValid,
+            })}
             sx={{
               width: widthItemPreview,
-              left: posItemPreview,
+              left: isDragReverse
+                ? posItemPreview - widthItemPreview
+                : posItemPreview,
             }}
           ></Box>
         )}
@@ -216,18 +252,28 @@ export default function TableRow({
         setOpened={onModalClose}
         updateAt={
           posItemPreview
-            ? convertPostoTime(
-                posItemPreview,
-                width,
-                start,
-                end,
-                date
-              ).toISOString()
+            ? isDragReverse
+              ? convertPostoTime(posEnd, width, start, end, date).toISOString()
+              : convertPostoTime(
+                  posItemPreview,
+                  width,
+                  start,
+                  end,
+                  date
+                ).toISOString()
             : undefined
         }
         endAt={
           posEnd
-            ? convertPostoTime(posEnd, width, start, end, date).toISOString()
+            ? isDragReverse
+              ? convertPostoTime(
+                  posItemPreview,
+                  width,
+                  start,
+                  end,
+                  date
+                ).toISOString()
+              : convertPostoTime(posEnd, width, start, end, date).toISOString()
             : undefined
         }
       />

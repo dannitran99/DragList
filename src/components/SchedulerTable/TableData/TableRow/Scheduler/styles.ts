@@ -2,6 +2,7 @@ import { createStyles } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
   scheduler: {
+    height: "90%",
     position: "absolute",
     top: "5%",
     backgroundColor: theme.colors.blue[3],
@@ -21,6 +22,10 @@ const useStyles = createStyles((theme) => ({
     "&:hover": {
       backgroundColor: theme.colors.gray[6],
     },
+  },
+  infoItem: {
+    height: "80%",
+    padding: ` 0 ${theme.spacing.xs}px`,
   },
 }));
 

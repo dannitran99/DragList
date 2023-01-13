@@ -14,7 +14,12 @@ import {
 } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import { useDisclosure, useToggle } from "@mantine/hooks";
-import { IconChevronDown, IconChevronUp, IconPlus } from "@tabler/icons";
+import {
+  IconChevronDown,
+  IconChevronUp,
+  IconPlus,
+  IconTrashX,
+} from "@tabler/icons";
 import _ from "lodash";
 import { useEffect, useState } from "react";
 import { addItem, listGetAll } from "../../app/actions/dragList";
@@ -22,6 +27,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { setIdSelect } from "../../app/slices/listDrag";
 import { RootState } from "../../app/store";
 import AddModal from "../../components/AddModal";
+import ConfirmModal from "../../components/ConfirmModal";
 import DragItem from "../../components/DragItem";
 import Table from "../../components/SchedulerTable";
 import { ItemTypes, TableConstants } from "../../constants/dragItem";
@@ -34,6 +40,7 @@ export default function TableScheduler() {
   const { data } = useAppSelector((state: RootState) => state.listDrag);
   const dispatch = useAppDispatch();
   const [openedModal, handlersModal] = useDisclosure(false);
+  const [openedModalClear, handlersModalClear] = useDisclosure(false);
   const [openedSetting, toggleSetting] = useToggle([false, true]);
   const [openedTodo, toggleTodo] = useToggle([true, false]);
   const [dateRange, setDateRange] = useState<Date[]>(selectWeek(new Date()));
@@ -117,6 +124,14 @@ export default function TableScheduler() {
                     min={TableDuration.START}
                     max={TableDuration.END}
                   />
+                  <Divider my="xl" />
+                  <Button
+                    leftIcon={<IconTrashX />}
+                    variant="default"
+                    onClick={handlersModalClear.open}
+                  >
+                    Clear Data
+                  </Button>
                 </Flex>
               </Collapse>
             </Paper>
@@ -176,6 +191,15 @@ export default function TableScheduler() {
         </Grid.Col>
       </Grid>
       <AddModal isOpened={openedModal} setOpened={handlersModal.close} />
+      <ConfirmModal
+        onClickDelete={() => {
+          dispatch(addItem([]));
+          handlersModalClear.close();
+        }}
+        onClose={handlersModalClear.close}
+        isOpen={openedModalClear}
+        title={"Are you sure you want to delete all items?"}
+      />
     </Box>
   );
 }
