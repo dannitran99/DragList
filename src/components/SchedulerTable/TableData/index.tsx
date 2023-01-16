@@ -34,8 +34,12 @@ export default function TableData({
     x: number;
     y: number;
   }>({ x: 0, y: 0 });
-  const time = [];
 
+  const getMousePos = (): number => {
+    return x + scrollPosition.x;
+  };
+
+  const time = [];
   for (let index = start; index < end; index++) {
     time.push(
       <Box
@@ -75,7 +79,7 @@ export default function TableData({
             cellHeight={cellHeight}
             openModalEdit={openModalEdit}
             handleDelete={handleDelete}
-            mousePos={x + scrollPosition.x}
+            mousePos={getMousePos}
           />
         </Box>
       ))}

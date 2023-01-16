@@ -34,7 +34,7 @@ interface IProps {
   date: Date;
   handleDelete?(id: string, handlers: () => void): void;
   openModalEdit?(id: string): void;
-  mousePos: number;
+  mousePos(): number;
 }
 
 export default function TableRow({
@@ -129,19 +129,19 @@ export default function TableRow({
   const handleMouseDown = () => {
     setIsItemValid(
       compareExact(
-        convertPostoTime(mousePos + 3, width, start, end, date).toDate(),
+        convertPostoTime(mousePos() + 3, width, start, end, date).toDate(),
         new Date()
       ) > 0
     );
     setIsCreateItem(true);
-    setPosItemPreview(mousePos + 3);
+    setPosItemPreview(mousePos() + 3);
     setWidthItemPreview(0);
   };
 
   const handleMouseMove = () => {
     if (isCreateItem) {
-      setWidthItemPreview(Math.abs(mousePos - posItemPreview + 3));
-      if (mousePos - posItemPreview > 0) {
+      setWidthItemPreview(Math.abs(mousePos() - posItemPreview + 3));
+      if (mousePos() - posItemPreview > 0) {
         setIsDragReverse(false);
       } else {
         setIsItemValid(
@@ -162,7 +162,7 @@ export default function TableRow({
   };
 
   const handleMouseUp = () => {
-    setPosEnd(mousePos + 3);
+    setPosEnd(mousePos() + 3);
     if (isItemValid) {
       handlersModal.open();
     } else {
@@ -247,7 +247,7 @@ export default function TableRow({
             openModalEdit={openModalEdit}
             handleDelete={handleDelete}
             date={date}
-            mousePos={mousePos}
+            mousePos={mousePos()}
           />
         ))}
       <AddModal

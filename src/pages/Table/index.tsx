@@ -105,14 +105,14 @@ export default function TableScheduler() {
                   <Text>Table width</Text>
                   <Slider
                     value={cellWidth}
-                    onChange={setCellWidth}
+                    onChangeEnd={setCellWidth}
                     min={TableSizing.minWidthCell}
                     max={TableSizing.maxWidthCell}
                   />
                   <Text>Table height</Text>
                   <Slider
                     value={cellHeight}
-                    onChange={setCellHeight}
+                    onChangeEnd={setCellHeight}
                     min={TableSizing.minHeightCell}
                     max={TableSizing.maxHeightCell}
                   />
@@ -120,7 +120,7 @@ export default function TableScheduler() {
                   <RangeSlider
                     minRange={1}
                     value={timeRange}
-                    onChange={setTimeRange}
+                    onChangeEnd={setTimeRange}
                     min={TableDuration.START}
                     max={TableDuration.END}
                   />

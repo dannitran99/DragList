@@ -89,7 +89,6 @@ export function checkToDisplaySchedule(
 
 export function convertTimeToPos(
   date: string | Date | undefined,
-
   rowWidth: number,
   durationStart: number,
   durationEnd: number,

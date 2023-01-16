@@ -29,7 +29,11 @@ import {
   convertDurationToPixel,
   convertTimeToPos,
 } from "../../../../../utils/convertDate";
-import { compareExact } from "../../../../../utils/selectDay";
+import {
+  compareDay,
+  compareExact,
+  compareHour,
+} from "../../../../../utils/selectDay";
 import ConfirmModal from "../../../../ConfirmModal";
 import useStyles from "./styles";
 
@@ -108,7 +112,9 @@ export default function Scheduler({
               >
                 <Divider size={10} color={isDisable >= 0 ? "indigo" : "dark"} />
                 <Flex align="center" className={classes.infoItem}>
-                  <Box className={classes.resizeBox}></Box>
+                  {compareDay(update_at, date) === 0 &&
+                    compareHour(update_at, dayjs(date).hour(start).toDate()) >=
+                      0 && <Box className={classes.resizeBox}></Box>}
                   <Flex
                     justify="center"
                     align="center"
@@ -123,7 +129,10 @@ export default function Scheduler({
                       <IconInfoCircle color="black" size="20" />
                     )}
                   </Flex>
-                  <Box className={classes.resizeBox}></Box>
+                  {compareDay(end_at, date) === 0 &&
+                    compareHour(dayjs(date).hour(end).toDate(), end_at) > 0 && (
+                      <Box className={classes.resizeBox}></Box>
+                    )}
                 </Flex>
               </Box>
             </HoverCard.Target>
