@@ -54,10 +54,10 @@ export default function DrawerCustom(props: IProps) {
           label="Sort item by..."
           placeholder="Pick one"
           data={[
-            { value: SelectTypes.DATE_ASC, label: "Name ↑" },
-            { value: SelectTypes.DATE_DESC, label: "Name ↓" },
-            { value: SelectTypes.NAME_ASC, label: "Date ↑" },
-            { value: SelectTypes.NAME_DESC, label: "Date ↓" },
+            { value: SelectTypes.NAME_ASC, label: "Name ↑" },
+            { value: SelectTypes.NAME_DESC, label: "Name ↓" },
+            { value: SelectTypes.DATE_ASC, label: "Date ↑" },
+            { value: SelectTypes.DATE_DESC, label: "Date ↓" },
           ]}
           value={sortValue}
           onChange={handleSelectSort}

@@ -22,10 +22,11 @@ import { ItemTypes } from "../../constants/dragItem";
 import _ from "lodash";
 import useStyles from "./styles";
 import { IconMenu2, IconPlus } from "@tabler/icons";
-import { setFilter, setIdSelect } from "../../app/slices/listDrag";
+import { setIdSelect } from "../../app/slices/listDrag";
 import DrawerCustom from "../../components/Drawer";
 import { useSearchParams } from "react-router-dom";
-import dayjs from "dayjs";
+import { compareDay } from "../../utils/selectDay";
+import sortArray from "../../utils/sortArray";
 
 function DragList() {
   const dispatch = useAppDispatch();
@@ -42,17 +43,12 @@ function DragList() {
 
   useEffect(() => {
     dispatch(listGetAll());
-    if (paramDate) {
-      const filter = data.filter((item: IDataList) => {
-        if (item.update_at)
-          return dayjs(item.update_at).diff(dayjs(paramDate), "day") === 0;
-        else return dayjs(item.create_at).diff(dayjs(paramDate), "day") === 0;
-      });
-      dispatch(setFilter(filter));
-    } else {
-      setFilter(null);
+    if (data.length && paramSort) {
+      let newData: IDataList[] = _.cloneDeep(data);
+      sortArray(newData, paramSort);
+      dispatch(addItem(newData));
     }
-  }, [dispatch, paramDate, paramSort]);
+  }, [dispatch, paramSort]);
 
   const handleDrop = useCallback(
     (item: { id: string }) => {
@@ -151,6 +147,15 @@ function DragList() {
             <Stack className={classes.stack}>
               {data
                 .filter((item: IDataList) => item.status === ItemTypes.QUEUE)
+                .filter((item: IDataList) => {
+                  if (paramDate) {
+                    if (item.end_at)
+                      return compareDay(item.end_at, paramDate) === 0;
+                    if (item.update_at)
+                      return compareDay(item.update_at, paramDate) === 0;
+                    return compareDay(item.create_at, paramDate) === 0;
+                  } else return true;
+                })
                 .map((item: IDataList, idx: number) => (
                   <DragItem
                     key={idx}
@@ -182,6 +187,15 @@ function DragList() {
                   .filter(
                     (item: IDataList) => item.status === ItemTypes.PROGRESS
                   )
+                  .filter((item: IDataList) => {
+                    if (paramDate) {
+                      if (item.end_at)
+                        return compareDay(item.end_at, paramDate) === 0;
+                      if (item.update_at)
+                        return compareDay(item.update_at, paramDate) === 0;
+                      return compareDay(item.create_at, paramDate) === 0;
+                    } else return true;
+                  })
                   .map((item: IDataList, idx: number) => (
                     <DragItem
                       key={idx}
@@ -216,6 +230,15 @@ function DragList() {
               <Stack className={classes.stack}>
                 {data
                   .filter((item: IDataList) => item.status === ItemTypes.DONE)
+                  .filter((item: IDataList) => {
+                    if (paramDate) {
+                      if (item.end_at)
+                        return compareDay(item.end_at, paramDate) === 0;
+                      if (item.update_at)
+                        return compareDay(item.update_at, paramDate) === 0;
+                      return compareDay(item.create_at, paramDate) === 0;
+                    } else return true;
+                  })
                   .map((item: IDataList, idx: number) => (
                     <DragItem
                       key={idx}

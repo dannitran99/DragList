@@ -29,9 +29,6 @@ export const listDrag = createSlice({
     setIdDrag: (state, { payload }: PayloadAction<string>) => {
       state.idDrag = payload;
     },
-    setFilter: (state, { payload }: PayloadAction<IDataList[] | null>) => {
-      state.filter = payload;
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(listGetAll.pending, (state) => {
@@ -58,5 +55,5 @@ export const listDrag = createSlice({
 });
 
 export const selectUser = (state: { list: IListDrag }) => state.list;
-export const { setIdSelect, setFilter, setIdDrag } = listDrag.actions;
+export const { setIdSelect, setIdDrag } = listDrag.actions;
 export default listDrag.reducer;
